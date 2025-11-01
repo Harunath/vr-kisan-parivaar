@@ -1,12 +1,14 @@
 import { getServerSession } from "next-auth";
 import { redirect } from "next/navigation";
 import { authOptions } from "../../../lib/auth/auth";
-import { FaLeaf, FaHeartbeat, FaFileAlt, FaLandmark } from "react-icons/fa";
+import { FaFileAlt, FaLandmark } from "react-icons/fa";
 import VrKpCard from "../../../components/user/docs/vrkp-card/VrKpCard";
+import ULCHProgram from "../../../components/user/docs/ulhc/ULHCProgram";
+import Activation from "../../../components/user/docs/ulhc/Activation";
 
 export default async function Page() {
 	const session = await getServerSession(authOptions);
-	if (!session) redirect("/logout");
+	if (!session || !session.user.vrKpId) redirect("/logout");
 
 	const documents = [
 		// {
@@ -15,12 +17,12 @@ export default async function Page() {
 		// 	icon: <FaLeaf className="text-[#045e5a] text-3xl" />,
 		// 	active: true,
 		// },
-		{
-			title: "ULHC Health Service Program Document",
-			desc: "Details of your health care benefits and partner services will be uploaded soon.",
-			icon: <FaHeartbeat className="text-[#045e5a] text-3xl" />,
-			active: true,
-		},
+		// {
+		// 	title: "ULHC Health Service Program Document",
+		// 	desc: "Details of your health care benefits and partner services will be uploaded soon.",
+		// 	icon: <FaHeartbeat className="text-[#045e5a] text-3xl" />,
+		// 	active: true,
+		// },
 		{
 			title: "Insurance Policy Document",
 			desc: "Insurance coverage details and policy certificate will be shared soon.",
@@ -42,6 +44,7 @@ export default async function Page() {
 					{session.user.fullname}&apos;s Documents
 				</h1>
 				<VrKpCard userId={session.user.id} />
+				<Activation />
 				<div className="space-y-6">
 					{documents.map((doc, i) => (
 						<article
