@@ -294,10 +294,10 @@ function RoleCard({ role }: { role: Role }) {
 								<p className="text-sm text-slate-600 leading-relaxed">
 									📧 Send your updated resume to{" "}
 									<a
-										href="mailto:career@vrkisanparivaar.com"
+										href="mailto:support@vrkisanparivaar.com"
 										className="text-[var(--chakra)] font-medium hover:underline"
 										style={{ ["--chakra" as any]: COLORS.chakra }}>
-										career@vrkisanparivaar.com
+										support@vrkisanparivaar.com
 									</a>{" "}
 									with the subject <b>“Application for {role.title}”</b>.
 								</p>

@@ -16,7 +16,9 @@ export default async function RootLayout({
 	}
 	return (
 		<div className="min-h-screen w-screen bg-neutral-100">
-			<UserNavbar />
+			<UserNavbar
+				canViewRefs={!!session.user.canRefer && !session.user.marketingMember}
+			/>
 			<div className="min-h-[80vh]">{children}</div>
 			<Footer />
 		</div>

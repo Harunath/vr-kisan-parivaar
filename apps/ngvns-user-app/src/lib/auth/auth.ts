@@ -112,7 +112,7 @@ export const authOptions: NextAuthOptions = {
 					token.phone = vr_user.phone;
 					token.userPhoto = vr_user.userPhoto;
 					token.vrKpId = vr_user.vrKpId;
-					token.canRefer = !!vr_user.canRefer;
+					token.canRefer = vr_user.canRefer;
 					token.marketingMember = !!vr_user.marketingMember;
 				}
 			}

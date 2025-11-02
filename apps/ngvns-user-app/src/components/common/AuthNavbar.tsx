@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { useState, useRef, useEffect } from "react";
 import { FaBars, FaTimes } from "react-icons/fa";
+import Link from "next/link";
 
 export default function AuthNavbar() {
 	const [isOpen, setIsOpen] = useState(false);
@@ -29,14 +30,16 @@ export default function AuthNavbar() {
 			<div className="w-full px-4 md:px-8 h-16 md:h-20 flex items-center justify-between">
 				{/* Logo */}
 				<div className="flex items-center ml-4 md:ml-8">
-					<Image
-						src="https://res.cloudinary.com/diaoy3wzi/image/upload/v1756982391/vrKP-4_no_bg_jndjxt.png"
-						alt="VR KP Logo"
-						width={180}
-						height={60}
-						className="h-12 md:h-16 w-auto object-contain"
-						priority
-					/>
+					<Link href="/" className="flex items-center">
+						<Image
+							src="https://res.cloudinary.com/diaoy3wzi/image/upload/v1756982391/vrKP-4_no_bg_jndjxt.png"
+							alt="VR KP Logo"
+							width={180}
+							height={60}
+							className="h-12 md:h-16 w-auto object-contain"
+							priority
+						/>
+					</Link>
 				</div>
 
 				{/* Hamburger for mobile */}

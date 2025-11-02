@@ -72,7 +72,7 @@ export const POST = async (req: NextRequest) => {
 		// (C) Server→server call to ULHC with HMAC headers
 		const ts = Date.now().toString();
 		const { sig, bodyStr } = signBody(prefill, ULHC_SHARED_SECRET, ts);
-
+		console.log("Sending prefill to ULHC for VRKP ID:", vrkpId);
 		const res = await fetch(`${ULHC_BASE_URL}/api/integrations/vrkp`, {
 			method: "POST",
 			headers: {

@@ -6,43 +6,55 @@ import { useState, useRef, useEffect } from "react";
 import { FaBars, FaTimes } from "react-icons/fa";
 import { FiUser } from "react-icons/fi";
 import Logout from "../auth/Logout";
-import { AnimatePresence } from "motion/react";
-import { motion } from "motion/react";
+import { AnimatePresence, motion } from "motion/react";
 
-export default function UserNavbar() {
+export default function UserNavbar({ canViewRefs }: { canViewRefs: boolean }) {
 	const [isOpen, setIsOpen] = useState(false);
 	const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-	const dropdownRef = useRef<HTMLDivElement>(null);
 
+	const dropdownRef = useRef<HTMLDivElement>(null);
+	const navRef = useRef<HTMLDivElement>(null);
 	const ref = useRef<HTMLDivElement>(null);
 	const [height, setHeight] = useState(0);
-
+	const [openLogout, setOpenLogout] = useState(false);
+	// calculate dropdown height for motion animation
 	useEffect(() => {
-		if (ref.current) {
-			setHeight(ref.current.scrollHeight);
-		}
+		if (ref.current) setHeight(ref.current.scrollHeight);
 	}, [isDropdownOpen]);
 
+	// handle outside click close
 	useEffect(() => {
 		function handleClickOutside(event: MouseEvent) {
+			const target = event.target as Node;
 			if (
-				dropdownRef.current &&
-				!dropdownRef.current.contains(event.target as Node)
-			) {
-				setIsDropdownOpen(false);
-			}
+				(dropdownRef.current && dropdownRef.current.contains(target)) ||
+				(navRef.current && navRef.current.contains(target))
+			)
+				return;
+
+			setIsDropdownOpen(false);
+			setIsOpen(false);
 		}
+
 		document.addEventListener("mousedown", handleClickOutside);
-		return () => {
-			document.removeEventListener("mousedown", handleClickOutside);
-		};
+		return () => document.removeEventListener("mousedown", handleClickOutside);
 	}, []);
+
+	// handle link click (closes everything)
+	const handleLinkClick = () => {
+		setIsOpen(false);
+		setIsDropdownOpen(false);
+	};
 
 	return (
 		<header className="bg-transparent text-black sticky top-0 z-50 backdrop-blur-md backdrop-saturate-150 shadow-lg">
-			<div className="w-full px-4 md:px-8 h-16 md:h-20 flex items-center justify-between">
+			<div className="w-full px-5 md:px-10 h-16 md:h-20 flex items-center justify-between">
 				{/* Logo */}
-				<Link href="/" className="flex items-center ml-4 md:ml-8">
+				{openLogout && <Logout openLogout={openLogout} set={setOpenLogout} />}
+				<Link
+					href="/"
+					className="flex items-center transition-transform hover:scale-[1.02]"
+					onClick={handleLinkClick}>
 					<Image
 						src="https://res.cloudinary.com/diaoy3wzi/image/upload/v1756982391/vrKP-4_no_bg_jndjxt.png"
 						alt="VR KP Logo"
@@ -53,89 +65,102 @@ export default function UserNavbar() {
 					/>
 				</Link>
 
-				{/* Hamburger for mobile */}
+				{/* Hamburger */}
 				<div className="md:hidden">
-					<button onClick={() => setIsOpen(!isOpen)}>
+					<button
+						onClick={() => setIsOpen(!isOpen)}
+						className="p-2 rounded-md hover:bg-gray-100 transition">
 						{isOpen ? (
-							<FaTimes className="text-black text-xl" />
+							<FaTimes className="text-black text-2xl" />
 						) : (
-							<FaBars className="text-black text-xl" />
+							<FaBars className="text-black text-2xl" />
 						)}
 					</button>
 				</div>
 
 				{/* Nav Links */}
 				<nav
-					className={`absolute md:static top-16 left-0 w-full md:w-auto px-6 md:px-0 py-4 md:py-0 md:flex items-center gap-6 text-md  font-semibold ${
-						isOpen ? "block bg-white text-black" : "hidden md:block"
+					ref={navRef}
+					className={`absolute md:static top-16 left-0 w-full md:w-auto bg-white md:bg-transparent transition-all duration-300 ease-in-out ${
+						isOpen
+							? "opacity-100 translate-y-0 visible shadow-md"
+							: "opacity-0 -translate-y-3 invisible md:visible md:opacity-100 md:translate-y-0 md:shadow-none"
 					}`}>
-					<Link href="/" className="block py-2 md:py-0 hover:text-orange-500">
-						Home
-					</Link>
-					<Link
-						href="/my-teams"
-						className="block py-2 md:py-0 hover:text-orange-500">
-						My Community
-					</Link>
-					<Link
-						href="/my-earnings"
-						className="block py-2 md:py-0 hover:text-orange-500">
-						My Earnings
-					</Link>
+					<div className="flex flex-col md:flex-row md:items-center gap-5 px-6 md:px-0 py-5 md:py-0 text-[16px] font-semibold text-gray-800">
+						<Link
+							href="/"
+							onClick={handleLinkClick}
+							className="hover:text-orange-500 transition-colors">
+							Home
+						</Link>
+						{canViewRefs && (
+							<>
+								<Link
+									href="/my-teams"
+									onClick={handleLinkClick}
+									className="hover:text-orange-500 transition-colors">
+									My Community
+								</Link>
+								<Link
+									href="/my-earnings"
+									onClick={handleLinkClick}
+									className="hover:text-orange-500 transition-colors">
+									My Earnings
+								</Link>
+							</>
+						)}
+						<Link
+							href="/profile"
+							onClick={handleLinkClick}
+							className="hover:text-orange-500 transition-colors">
+							My Profile
+						</Link>
 
-					<Link
-						href="/profile"
-						className="block py-2 md:py-0 hover:text-orange-500">
-						My Profile
-					</Link>
+						{/* User Dropdown */}
+						<div className="relative" ref={dropdownRef}>
+							<button
+								onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+								className="mt-3 md:mt-0 flex items-center justify-center bg-[#138808] hover:bg-green-700 text-white px-4 py-2 rounded-full transition-colors duration-300">
+								<FiUser className="text-lg" />
+							</button>
 
-					{/* Become a Member */}
-					{/* <Link href="/member">
-						<button className="mt-4 md:mt-0 bg-[#138808] hover:bg-green-700 text-white px-4 py-2 rounded-full transition">
-							Become a Member
-						</button>
-					</Link> */}
-					{/* <AuthButton /> */}
-					<div className="relative" ref={dropdownRef}>
-						<button
-							onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-							className="mt-4 md:mt-0 bg-[#138808] hover:bg-green-700 text-white px-4 py-2 rounded-full transition">
-							<FiUser />
-						</button>
-						<AnimatePresence initial={false} mode="wait">
-							{isDropdownOpen && (
-								<motion.div
-									initial={{ height: 0, y: -10 }}
-									animate={{ height, y: 0 }}
-									exit={{ height: 0, y: -10 }}
-									transition={{ duration: 0.3, ease: "easeInOut" }}
-									className="absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded-md shadow-lg z-50 overflow-hidden">
-									<div ref={ref}>
-										<Link
-											href="/dashboard"
-											onClick={() => setIsDropdownOpen(false)}
-											className="block px-4 py-2 text-gray-800 hover:bg-gray-100">
-											Dashboard
-										</Link>
-										<Link
-											href="/my-docs"
-											onClick={() => setIsDropdownOpen(false)}
-											className="block px-4 py-2 text-gray-800 hover:bg-gray-100">
-											My Documents
-										</Link>
-
-										<Link
-											href="/settings/password"
-											onClick={() => setIsDropdownOpen(false)}
-											className="block px-4 py-2 text-gray-800 hover:bg-gray-100">
-											Change Password
-										</Link>
-
-										<Logout />
-									</div>
-								</motion.div>
-							)}
-						</AnimatePresence>
+							<AnimatePresence initial={false} mode="wait">
+								{isDropdownOpen && (
+									<motion.div
+										initial={{ height: 0, opacity: 0, y: -10 }}
+										animate={{ height, opacity: 1, y: 0 }}
+										exit={{ height: 0, opacity: 0, y: -10 }}
+										transition={{ duration: 0.25, ease: "easeInOut" }}
+										className="absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded-lg shadow-lg z-50 overflow-hidden">
+										<div ref={ref}>
+											<Link
+												href="/dashboard"
+												onClick={handleLinkClick}
+												className="block px-4 py-2 text-gray-800 hover:bg-gray-100">
+												Dashboard
+											</Link>
+											<Link
+												href="/my-docs"
+												onClick={handleLinkClick}
+												className="block px-4 py-2 text-gray-800 hover:bg-gray-100">
+												My Documents
+											</Link>
+											<Link
+												href="/settings/password"
+												onClick={handleLinkClick}
+												className="block px-4 py-2 text-gray-800 hover:bg-gray-100">
+												Change Password
+											</Link>
+											<button
+												className="mx-auto w-full px-2 py-1 text-neutral-100 bg-red-600 hover:text-neutral-800 hover:bg-red-200 rounded"
+												onClick={() => setOpenLogout(true)}>
+												Logout
+											</button>
+										</div>
+									</motion.div>
+								)}
+							</AnimatePresence>
+						</div>
 					</div>
 				</nav>
 			</div>
