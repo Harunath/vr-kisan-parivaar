@@ -63,32 +63,33 @@ export default async function Page() {
 						background: `linear-gradient(90deg, ${SAFFRON}, white, ${GREEN})`,
 					}}
 				/>
-				<section
-					className="relative mx-auto w-full rounded-2xl p-[1px]"
-					style={{
-						background: `linear-gradient(135deg, ${SAFFRON}, white 40%, ${GREEN})`,
-					}}>
-					<div className="relative rounded-[calc(theme(borderRadius.2xl)-1px)] bg-white">
-						{/* Watermark */}
-						<svg
-							className="pointer-events-none absolute -right-8 -top-8 h-40 w-40 opacity-10"
-							viewBox="0 0 100 100"
-							aria-hidden>
-							<g fill="none" stroke={CHAKRA} strokeWidth="2">
-								<circle cx="50" cy="50" r="30" />
-								{Array.from({ length: 24 }).map((_, i) => {
-									const angle = (i * 15 * Math.PI) / 180;
-									const x = 50 + 30 * Math.cos(angle);
-									const y = 50 + 30 * Math.sin(angle);
-									return <line key={i} x1="50" y1="50" x2={x} y2={y} />;
-								})}
-							</g>
-						</svg>
+				{session.user.canRefer && (
+					<section
+						className="relative mx-auto w-full rounded-2xl p-[1px]"
+						style={{
+							background: `linear-gradient(135deg, ${SAFFRON}, white 40%, ${GREEN})`,
+						}}>
+						<div className="relative rounded-[calc(theme(borderRadius.2xl)-1px)] bg-white">
+							{/* Watermark */}
+							<svg
+								className="pointer-events-none absolute -right-8 -top-8 h-40 w-40 opacity-10"
+								viewBox="0 0 100 100"
+								aria-hidden>
+								<g fill="none" stroke={CHAKRA} strokeWidth="2">
+									<circle cx="50" cy="50" r="30" />
+									{Array.from({ length: 24 }).map((_, i) => {
+										const angle = (i * 15 * Math.PI) / 180;
+										const x = 50 + 30 * Math.cos(angle);
+										const y = 50 + 30 * Math.sin(angle);
+										return <line key={i} x1="50" y1="50" x2={x} y2={y} />;
+									})}
+								</g>
+							</svg>
 
-						<BankPage />
-					</div>
-				</section>
-
+							<BankPage />
+						</div>
+					</section>
+				)}
 				{/* Divider – thin tricolour stripe */}
 				<div
 					className="mx-auto my-8 h-[3px] w-full rounded"
@@ -199,20 +200,22 @@ export default async function Page() {
 				</section>
 
 				{/* Referral – flag ribbon wrapper */}
-				<section className="mt-8">
-					<div className="relative rounded-2xl border bg-white">
-						{/* ribbon top */}
-						<div
-							className="h-1.5 w-full rounded-t-2xl"
-							style={{
-								background: `linear-gradient(90deg, ${SAFFRON}, white, ${GREEN})`,
-							}}
-						/>
-						<div className="p-4 md:p-5">
-							<Referral />
+				{session.user.canRefer && (
+					<section className="mt-8">
+						<div className="relative rounded-2xl border bg-white">
+							{/* ribbon top */}
+							<div
+								className="h-1.5 w-full rounded-t-2xl"
+								style={{
+									background: `linear-gradient(90deg, ${SAFFRON}, white, ${GREEN})`,
+								}}
+							/>
+							<div className="p-4 md:p-5">
+								<Referral />
+							</div>
 						</div>
-					</div>
-				</section>
+					</section>
+				)}
 			</div>
 		</div>
 	);
