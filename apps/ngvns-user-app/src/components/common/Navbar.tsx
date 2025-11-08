@@ -123,6 +123,14 @@ export default function Navbar() {
 								)}
 							</div>
 						</li>
+						<li>
+							<Link
+								href="/shop"
+								onClick={handleLinkClick}
+								className="block py-2 hover:text-orange-600 transition-colors">
+								Shop
+							</Link>
+						</li>
 
 						<li>
 							<Link
