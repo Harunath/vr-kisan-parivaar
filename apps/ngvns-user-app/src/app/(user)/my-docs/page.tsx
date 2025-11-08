@@ -3,8 +3,8 @@ import { redirect } from "next/navigation";
 import { authOptions } from "../../../lib/auth/auth";
 import { FaFileAlt, FaLandmark } from "react-icons/fa";
 import VrKpCard from "../../../components/user/docs/vrkp-card/VrKpCard";
-import ULCHProgram from "../../../components/user/docs/ulhc/ULHCProgram";
 import Activation from "../../../components/user/docs/ulhc/Activation";
+import LandAllocationPage from "../../../components/user/docs/land-allocation/LandAllocationPage";
 
 export default async function Page() {
 	const session = await getServerSession(authOptions);
@@ -29,12 +29,12 @@ export default async function Page() {
 			icon: <FaFileAlt className="text-[#045e5a] text-3xl" />,
 			active: true,
 		},
-		{
-			title: "Land Document",
-			desc: "Your allotted land details and ownership documents will appear here once ready.",
-			icon: <FaLandmark className="text-[#045e5a] text-3xl" />,
-			active: true,
-		},
+		// {
+		// 	title: "Land Document",
+		// 	desc: "Your allotted land details and ownership documents will appear here once ready.",
+		// 	icon: <FaLandmark className="text-[#045e5a] text-3xl" />,
+		// 	active: true,
+		// },
 	];
 
 	return (
@@ -45,6 +45,7 @@ export default async function Page() {
 				</h1>
 				<VrKpCard userId={session.user.id} />
 				<Activation />
+				<LandAllocationPage />
 				<div className="space-y-6">
 					{documents.map((doc, i) => (
 						<article
