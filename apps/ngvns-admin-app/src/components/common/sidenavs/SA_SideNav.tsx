@@ -75,6 +75,12 @@ const SA_SideNav = () => {
 						href: "/super-admin/land-allocation",
 					},
 					{
+						id: "insurance",
+						label: "Insurance",
+						icon: <FiShield className="h-4 w-4" />,
+						href: "/super-admin/insurance",
+					},
+					{
 						id: "settings",
 						label: "Settings",
 						icon: <FiSettings className="h-4 w-4" />,

@@ -80,6 +80,8 @@ model User {
   UserPayouts          UserPayout[]
   VRKP_Card            VRKP_Card?
 
+  insuranceRecord      InsuranceRecord?
+
   byAcquisitionId     String?
   byAcquisition       MarketingMember?           @relation("AcquiredUsers", fields: [byAcquisitionId], references: [id])
   
@@ -520,6 +522,32 @@ model Benefit {
   createdBy   Admin?      @relation(fields: [createdById], references: [id])
   user        User        @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
+
+model InsuranceRecord {
+  id             String    @id @default(cuid())
+  userId         String    @unique
+  policyId       String    @unique
+  providerName   String?   // e.g., "LIC", "HDFC Ergo", etc.
+  policyType     String?   // e.g., "Health", "Life", "Vehicle", etc.
+  issueDate      DateTime  // When policy was issued
+  activationDate DateTime? // When policy becomes active
+  expiryDate     DateTime? // When policy expires
+  status         PolicyStatus @default(PENDING)
+  remarks        String?   // Any internal notes (optional)
+
+  user           User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+}
+
+enum PolicyStatus {
+  PENDING    // Policy created but not yet active
+  ACTIVE     // Currently valid
+  EXPIRED    // Past expiry date
+  CANCELLED  // Manually cancelled
+}
+
 
 enum AdminRole {
   ROOT
