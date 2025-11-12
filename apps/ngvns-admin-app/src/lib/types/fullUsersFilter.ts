@@ -12,8 +12,8 @@ export const UsersQuerySchema = z.object({
 	q: z.string().min(2).optional(),
 
 	// date filters (inclusive range)
-	createdFrom: z.string().datetime().optional(),
-	createdTo: z.string().datetime().optional(),
+	createdFrom: z.string().optional(),
+	createdTo: z.string().optional(),
 
 	// pagination & sort
 	limit: z.coerce.number().int().min(1).max(100).default(20),
