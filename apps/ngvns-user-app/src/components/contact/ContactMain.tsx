@@ -1,6 +1,6 @@
 "use client";
 import React from "react";
-import { FaEnvelope, FaGlobe, FaPaperPlane } from "react-icons/fa";
+import { FaEnvelope, FaGlobe, FaPaperPlane, FaPhone } from "react-icons/fa";
 
 const ContactMain = () => {
 	return (
@@ -35,7 +35,22 @@ const ContactMain = () => {
 
 						<div className="space-y-6">
 							{/* Section Title */}
-							
+							{/* Phone */}
+							<div className="flex items-start gap-4">
+								<div className="rounded-lg bg-blue-100 p-3 text-blue-700">
+									<FaPhone className="text-xl" />
+								</div>
+								<div>
+									<h3 className="text-sm font-semibold text-slate-900">
+										Phone
+									</h3>
+									<a
+										href="tel:+919908633408"
+										className="text-slate-700 hover:text-slate-900 hover:underline">
+										+91 99086 33412
+									</a>
+								</div>
+							</div>
 
 							{/* Email */}
 							<div className="flex items-start gap-4">
