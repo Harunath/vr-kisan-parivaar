@@ -105,14 +105,14 @@ export default function Footer() {
 					</h3>
 					<p className="text-sm text-slate-300 mb-4 leading-relaxed">
 						Email: support@vrkisanparivaar.com
-						{/* <br />
-						Phone: +91 9515934289 */}
+						<br />
+						Phone: +91 99086 33412
 					</p>
-					{/* <a
-						href="tel:+919515934289"
+					<a
+						href="tel:+919908633412"
 						className="inline-block mb-4 px-4 py-2 bg-orange-500 text-white font-semibold rounded-md hover:bg-orange-600 transition">
 						📞 Call Support
-					</a> */}
+					</a>
 					<div className="flex space-x-4 text-xl">
 						{[
 							{ href: "#", icon: <FaFacebookF />, color: "#1877F2" },

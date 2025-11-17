@@ -45,7 +45,7 @@ const ContactMain = () => {
 										Phone
 									</h3>
 									<a
-										href="tel:+919908633408"
+										href="tel:+919908633412"
 										className="text-slate-700 hover:text-slate-900 hover:underline">
 										+91 99086 33412
 									</a>
