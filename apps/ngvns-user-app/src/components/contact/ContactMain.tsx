@@ -1,6 +1,12 @@
 "use client";
 import React from "react";
-import { FaEnvelope, FaGlobe, FaPaperPlane, FaPhone } from "react-icons/fa";
+import {
+	FaEnvelope,
+	FaGlobe,
+	FaMapMarkerAlt,
+	FaPaperPlane,
+	FaPhone,
+} from "react-icons/fa";
 
 const ContactMain = () => {
 	return (
@@ -35,6 +41,22 @@ const ContactMain = () => {
 
 						<div className="space-y-6">
 							{/* Section Title */}
+							{/* Address */}
+							<div className="flex items-start gap-4">
+								<div className="rounded-lg bg-purple-100 p-3 text-purple-700">
+									<FaMapMarkerAlt className="text-xl" />
+								</div>
+								<div>
+									<h3 className="text-sm font-semibold text-slate-900">
+										Address
+									</h3>
+									<p className="text-slate-700">
+										#101, Rajeswari Towers, Dwarakapuri Colony,
+										<br />
+										Panjagutta, Hyderabad - 500082
+									</p>
+								</div>
+							</div>
 							{/* Phone */}
 							<div className="flex items-start gap-4">
 								<div className="rounded-lg bg-blue-100 p-3 text-blue-700">
