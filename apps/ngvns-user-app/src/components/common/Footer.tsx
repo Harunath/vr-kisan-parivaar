@@ -107,6 +107,9 @@ export default function Footer() {
 						Email: support@vrkisanparivaar.com
 						<br />
 						Phone: +91 99086 33412
+						<br />
+						Address: #101,Rajeswari Towers,Dwarakapuri Colony,
+						Panjagutta,Hyderabad - 500082
 					</p>
 					<a
 						href="tel:+919908633412"
