@@ -28,7 +28,7 @@ const faqs = [
 
 export default function RuralImpactFaq() {
 	return (
-		<section className="relative bg-white text-slate-900">
+		<section className="relative overflow-hidden bg-white text-slate-900">
 			{/* Top tricolor line */}
 			<div
 				className="h-1 w-full"
@@ -38,10 +38,10 @@ export default function RuralImpactFaq() {
 			/>
 
 			{/* Subtle background */}
-			<div className="absolute inset-0 -z-10 bg-[radial-gradient(60rem_60rem_at_120%_-10%,#fff7ed_10%,transparent_60%),radial-gradient(40rem_40rem_at_-10%_110%,#ecfdf5_10%,transparent_60%)]" />
+			<div className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(60rem_60rem_at_120%_-10%,#fff7ed_10%,transparent_60%),radial-gradient(40rem_40rem_at_-10%_110%,#ecfdf5_10%,transparent_60%)]" />
 
-			<div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 py-16">
-				<div className="grid gap-12 md:grid-cols-2 md:items-center">
+			<div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 py-12 sm:py-16 lg:py-20">
+				<div className="grid gap-10 lg:gap-16 md:grid-cols-2 md:items-center">
 					{/* LEFT SIDE */}
 					<motion.div
 						initial={{ opacity: 0, x: -24 }}
@@ -55,7 +55,7 @@ export default function RuralImpactFaq() {
 								alt="Rural India Initiative"
 								width={1200}
 								height={800}
-								className="h-[320px] w-full object-cover md:h-[380px]"
+								className="h-56 xs:h-64 sm:h-72 md:h-80 lg:h-96 w-full object-cover"
 								priority
 							/>
 							<div
@@ -66,13 +66,16 @@ export default function RuralImpactFaq() {
 							/>
 						</div>
 
-						<div>
-							<h3 className="text-3xl font-extrabold tracking-tight text-slate-900">
+						<div className="space-y-2 sm:space-y-3">
+							<p className="inline-flex items-center rounded-full bg-slate-100 px-3 py-1 text-xs font-medium text-slate-700 sm:text-sm">
+								Support & FAQs
+							</p>
+							<h3 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold tracking-tight text-slate-900">
 								Still Have Questions?
 							</h3>
-							<p className="mt-3 text-slate-600">
+							<p className="text-sm sm:text-base text-slate-600 leading-relaxed">
 								We&apos;re here to support you with sustainable development,
-								innovative rural solutions, and community-driven initiatives—
+								innovative rural solutions, and community-driven initiatives —
 								empowering villages to thrive.
 							</p>
 						</div>
@@ -83,27 +86,40 @@ export default function RuralImpactFaq() {
 						initial={{ opacity: 0, y: 18 }}
 						whileInView={{ opacity: 1, y: 0 }}
 						viewport={{ once: true, amount: 0.2 }}
-						transition={{ duration: 0.5 }}>
-						<h2 className="text-4xl font-extrabold tracking-tight text-slate-900 whitespace-nowrap">
-							FAQs on Rural Development
-						</h2>
-						<p className="mt-2 text-slate-600">
-							Have questions about our work in rural India? Explore the most
-							common queries below.
-						</p>
-
-						<div className="mt-6 divide-y divide-slate-200 rounded-2xl border border-slate-200 bg-white shadow-sm">
-							{faqs.map((faq) => (
-								<div
-									key={faq.question}
-									className="px-5 py-4 hover:bg-slate-50 transition">
-									<p className="font-semibold text-slate-900">{faq.question}</p>
-									<p className="mt-2 text-sm text-slate-700 leading-relaxed">
-										{faq.answer}
-									</p>
-								</div>
-							))}
+						transition={{ duration: 0.5 }}
+						className="flex flex-col">
+						<div className="space-y-2 sm:space-y-3">
+							<h2 className="text-xl sm:text-3xl lg:text-3xl font-extrabold tracking-tight text-slate-900">
+								FAQs on Rural Development
+							</h2>
+							<p className="text-sm sm:text-base text-slate-600 max-w-xl">
+								Have questions about our work in rural India? Explore the most
+								common queries below.
+							</p>
 						</div>
+
+						<div className="mt-6 rounded-2xl border border-slate-200 bg-white shadow-sm overflow-hidden">
+							<ul className="divide-y divide-slate-200">
+								{faqs.map((faq) => (
+									<li
+										key={faq.question}
+										className="px-4 sm:px-5 py-4 sm:py-5 hover:bg-slate-50 transition-colors">
+										<p className="text-sm sm:text-base font-semibold text-slate-900">
+											{faq.question}
+										</p>
+										<p className="mt-2 text-xs sm:text-sm text-slate-700 leading-relaxed">
+											{faq.answer}
+										</p>
+									</li>
+								))}
+							</ul>
+						</div>
+
+						{/* Small footer note for mobile clarity */}
+						<p className="mt-4 text-xs text-slate-500 sm:hidden">
+							Scroll to view more questions if the list extends beyond your
+							screen.
+						</p>
 					</motion.div>
 				</div>
 			</div>

@@ -138,8 +138,8 @@ export default function Footer() {
 			{/* Bottom Bar */}
 			<div className="border-t border-slate-700 py-4 text-center text-xs text-slate-400 px-4 space-y-2">
 				<div>
-					&copy; {new Date().getFullYear()} VR KISAN PARIVAAR. All rights
-					reserved.
+					&copy; {new Date().getFullYear()} VR KISAN PARIVAAR PRIVATE LIMITED.
+					All rights reserved.
 				</div>
 				<div className="flex flex-wrap justify-center space-x-4">
 					<Link

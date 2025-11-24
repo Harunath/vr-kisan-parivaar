@@ -54,7 +54,7 @@ export default function Hero() {
 				</div>
 
 				<h1 className="mb-1 sm:mb-2 text-3xl sm:text-4xl md:text-5xl font-extrabold text-[#963132] uppercase tracking-widest">
-					VR KISAN PARIVAAR
+					VR KISAN PARIVAAR PRIVATE LIMITED
 				</h1>
 
 				<h4 className="mb-2 sm:mb-3 text-2xl sm:text-3xl md:text-4xl font-semibold text-green-800 leading-tight tracking-tight">
