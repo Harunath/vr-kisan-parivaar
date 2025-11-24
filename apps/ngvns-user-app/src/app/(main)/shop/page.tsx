@@ -1,5 +1,5 @@
 import React from "react";
-import { FaShoppingBag } from "react-icons/fa";
+import Image from "next/image";
 
 export default function Page() {
 	return (
@@ -9,14 +9,18 @@ export default function Page() {
 			<div className="absolute bottom-0 -right-20 w-72 h-72 bg-[#138808]/10 rounded-full blur-3xl" />
 
 			<div className="relative z-10 w-full max-w-3xl px-6 text-center">
-				<div className="flex flex-col items-center justify-center mb-6 space-y-3">
-					<FaShoppingBag className="text-[#FF9933] text-6xl drop-shadow-sm" />
-					<h1 className="text-5xl md:text-6xl font-extrabold tracking-tight text-[#000080]">
-						VR Mart
-					</h1>
+				<div className="flex flex-col items-center justify-center space-y-3">
+					<Image
+						src="https://res.cloudinary.com/diaoy3wzi/image/upload/v1763962658/vr1mart-logo_sample1_aresdz.png"
+						alt="VR 1 Mart Logo"
+						width={800} // increased
+						height={250} // increased
+						className="object-contain"
+						priority
+					/>
 				</div>
 
-				<h2 className="mt-2 text-2xl md:text-3xl font-semibold text-neutral-800">
+				<h2 className=" text-2xl md:text-3xl font-semibold text-neutral-800">
 					Coming Soon
 				</h2>
 
