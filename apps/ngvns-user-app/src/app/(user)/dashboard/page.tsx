@@ -3,6 +3,7 @@ import React from "react";
 import { authOptions } from "../../../lib/auth/auth";
 import { getServerSession } from "next-auth";
 import Referral from "../../../components/user/profile/referral/Referral";
+import UserNotifications from "../../../components/user/dashboard/UserNotifications";
 
 // --- Small client component for subtle motion ---
 function TricolorBanner() {
@@ -27,6 +28,9 @@ const Page = async () => {
 			{/* Top flag banner */}
 			<TricolorBanner />
 
+			<div className="px-4 pt-3">
+				<UserNotifications userId={session?.user?.id!} />
+			</div>
 			{/* Page container */}
 			<div className="mx-auto max-w-3xl px-4 py-10">
 				<header className="flex flex-col gap-2 md:flex-row md:items-end md:justify-between">
