@@ -275,7 +275,7 @@ export async function POST(req: Request) {
 
 		// background
 		const bgUrl =
-			"https://pub-98a0b13dd37c4b7b84e18b52d9c03d5e.r2.dev/users/vrkp-card-template.png";
+			"https://pub-98a0b13dd37c4b7b84e18b52d9c03d5e.r2.dev/vrkp-card-template.png";
 		const bgImage = await loadImage(bgUrl);
 		ctx.drawImage(bgImage, 0, 0, width, height);
 

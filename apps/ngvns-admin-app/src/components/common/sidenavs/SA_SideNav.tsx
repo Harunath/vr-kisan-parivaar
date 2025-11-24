@@ -4,6 +4,7 @@ import {
 	FiShield,
 	FiSettings,
 	FiBox,
+	FiColumns,
 } from "react-icons/fi";
 import SideNav from "./SideNav";
 
@@ -66,6 +67,18 @@ const SA_SideNav = () => {
 						label: "Marketing Teams",
 						icon: <FiBox className="h-4 w-4" />,
 						href: "/super-admin/marketing-teams",
+					},
+					{
+						id: "land-allocation",
+						label: "Land Allocation",
+						icon: <FiColumns className="h-4 w-4" />,
+						href: "/super-admin/land-allocation",
+					},
+					{
+						id: "insurance",
+						label: "Insurance",
+						icon: <FiShield className="h-4 w-4" />,
+						href: "/super-admin/insurance",
 					},
 					{
 						id: "settings",
