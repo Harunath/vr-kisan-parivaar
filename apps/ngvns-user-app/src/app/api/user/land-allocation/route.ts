@@ -73,6 +73,22 @@ export const POST = async () => {
 				{ status: 400 }
 			);
 		}
+		const mailRes = await fetch(
+			`${process.env.NEXT_PUBLIC_BASE_URL}/api/user/integrations/land-allotment/mail`,
+			{
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json",
+				},
+				body: JSON.stringify({
+					userId: session.user.id,
+				}),
+			}
+		);
+		if (!mailRes.ok) {
+			console.error("Failed to send land allotment email");
+		}
+
 		return NextResponse.json(landAllocation, { status: 201 });
 	} catch (error) {
 		console.error("Error creating land allocation:", error);

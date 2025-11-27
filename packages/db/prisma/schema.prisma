@@ -88,6 +88,8 @@ model User {
   byMarketingTeamId   String?
   byMarketingTeam     MarketingTeam?   @relation(fields: [byMarketingTeamId], references: [id])
 
+  landAllotmentMails   LandAllotmentMailLog[]
+
   @@index([id])
   @@index([vrKpId])
   @@index([phone])
@@ -662,4 +664,37 @@ enum AllocationStatus {
 
 enum BenefitType {
   INSURANCE
+}
+
+
+model LandAllotmentMailLog {
+  id               String   @id @default(cuid())
+  
+  // For knowing whom you sent
+  toAddress        String
+  memberId         String     // optional (if linked to Member table)
+  member           User      @relation(fields: [memberId], references: [id])
+
+  // Template details
+  templateKey      String?
+  mergeInfo        Json?
+
+  // Delivery Tracking
+  deliveryStatus   MailStatus   @default(PENDING)
+  responseStatus   Int?         // e.g., 200, 400
+  responseData     Json?
+
+  retryCount       Int          @default(0)
+  lastTriedAt      DateTime? 
+  deliveredAt      DateTime?
+
+  createdAt        DateTime     @default(now())
+  updatedAt        DateTime     @updatedAt
+}
+
+enum MailStatus {
+  PENDING      // Not attempted yet
+  SENT         // Successfully delivered
+  FAILED       // Tried but failed
+  RETRYING     // Auto/manual retry in progress
 }

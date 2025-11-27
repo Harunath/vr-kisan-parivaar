@@ -42,6 +42,7 @@ export default async function UserDetailsPage({
 					cardUrl: true,
 				},
 			},
+			landAllotments: true,
 		},
 	});
 
@@ -74,6 +75,18 @@ export default async function UserDetailsPage({
 								<p className=" text-red-400">Issued card. </p>
 							)}
 						</Link>
+						<span className="mx-1">·</span>
+						{user.landAllotments && user.landAllotments.length > 0 ? (
+							<Link
+								href={`/super-admin/user-list/${user.id}/land-allotment`}
+								className=" text-blue-500 underline">
+								<p className=" text-green-400">View Land Allotment</p>
+							</Link>
+						) : (
+							<span className=" text-red-400 underline cursor-not-allowed">
+								No Land Allotment.
+							</span>
+						)}
 					</p>
 				</header>
 
