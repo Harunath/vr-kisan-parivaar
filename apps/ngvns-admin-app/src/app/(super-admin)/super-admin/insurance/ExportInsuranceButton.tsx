@@ -7,7 +7,7 @@ export default function ExportInsuranceButton() {
 	const handleDownload = async () => {
 		try {
 			setLoading(true);
-			const res = await fetch("/api/super-admin/insurance/export", {
+			const res = await fetch("/api/super-admin/insurance/v1", {
 				method: "GET",
 				credentials: "include", // send cookies for auth-protected route
 			});
