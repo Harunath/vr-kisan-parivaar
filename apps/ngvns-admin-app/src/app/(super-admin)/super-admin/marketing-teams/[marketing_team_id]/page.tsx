@@ -33,7 +33,6 @@ export default async function MarketingTeamPage({ params }: PageProps) {
 		where: { id: marketingTeamId },
 		include: {
 			members: {
-				where: { role: MarketingRole.GENERAL_MANAGER },
 				select: {
 					id: true,
 					role: true,
@@ -41,6 +40,7 @@ export default async function MarketingTeamPage({ params }: PageProps) {
 					user: { select: { id: true, fullname: true, email: true } },
 				},
 			},
+			_count: { select: { members: true, users: true } },
 		},
 	});
 
@@ -71,11 +71,17 @@ export default async function MarketingTeamPage({ params }: PageProps) {
 					</div>
 
 					<div className="flex flex-wrap gap-3">
-						<Link
-							href={`/super-admin/marketing-teams/${marketingTeamId}/add-general-manager`}
-							className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-blue-700">
-							+ Add General Manager
-						</Link>
+						{marketingTeam &&
+							!marketingTeam.members.some(
+								(m) => m.role !== MarketingRole.GENERAL_MANAGER
+							) && (
+								<Link
+									href={`/super-admin/marketing-teams/${marketingTeamId}/add-general-manager`}
+									className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-blue-700">
+									+ Add General Manager
+								</Link>
+							)}
+
 						<Link
 							href="/super-admin/marketing-teams"
 							className="rounded-lg border border-gray-200 bg-white px-4 py-2 text-sm font-semibold text-gray-700 shadow-sm transition hover:bg-gray-50">
@@ -120,6 +126,22 @@ export default async function MarketingTeamPage({ params }: PageProps) {
 										Active
 									</span>
 								</div>
+								<div>
+									<p className="text-xs uppercase tracking-wide text-gray-500">
+										Total Marketing Members
+									</p>
+									<span className="mt-1 inline-flex items-center rounded-full border border-emerald-200 bg-emerald-50 px-2.5 py-1 text-xs font-medium text-emerald-700">
+										{marketingTeam._count.members}
+									</span>
+								</div>
+								<div>
+									<p className="text-xs uppercase tracking-wide text-gray-500">
+										Total Members Added
+									</p>
+									<span className="mt-1 inline-flex items-center rounded-full border border-emerald-200 bg-emerald-50 px-2.5 py-1 text-xs font-medium text-emerald-700">
+										{marketingTeam._count.users}
+									</span>
+								</div>
 							</div>
 						</div>
 
@@ -127,7 +149,7 @@ export default async function MarketingTeamPage({ params }: PageProps) {
 						<div className="rounded-xl border bg-white p-5 shadow-sm">
 							<div className="flex items-center justify-between">
 								<h2 className="text-lg font-semibold text-gray-900">
-									TGeneral Manager
+									Marketing Team
 								</h2>
 							</div>
 
