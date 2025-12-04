@@ -10,7 +10,7 @@ function layout({ children }: { children: React.ReactNode }) {
 				<div>
 					<SA_SideNav />
 				</div>
-				<div>{children}</div>
+				<div className="flex-1">{children}</div>
 			</div>
 		</div>
 	);

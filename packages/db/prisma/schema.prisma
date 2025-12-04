@@ -77,7 +77,6 @@ model User {
   joinedBy             User?            @relation("UserDirectJoin", fields: [parentReferralId], references: [vrKpId])
   directJoin           User[]           @relation("UserDirectJoin")
   UserPayments         UserPayments[]   @relation("payment-user")
-  UserPayouts          UserPayout[]
   VRKP_Card            VRKP_Card?
 
   insuranceRecord      InsuranceRecord?
@@ -89,6 +88,11 @@ model User {
   byMarketingTeam     MarketingTeam?   @relation(fields: [byMarketingTeamId], references: [id])
 
   landAllotmentMails   LandAllotmentMailLog[]
+
+  referralPayouts     UserPayout[]      @relation("payout_parent")
+  directPayouts       UserPayout[]      @relation("payout_user")
+
+  transferPayouts      PayoutTransfer[]
 
   @@index([id])
   @@index([vrKpId])
@@ -221,6 +225,8 @@ model BankDetails {
   isPrimary         Boolean     @default(false)
   upiId             String?
   User              User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  payouts          UserPayout[]
+  PayoutTransfers PayoutTransfer[]
 
   @@unique([userId, accountNumberEnc])
   @@index([userId])
@@ -323,12 +329,34 @@ model UserPayoutType {
   id                 String       @id @default(uuid())
   name               String       @unique
   description        String?
-  defaultAmountPaise BigInt?
+  defaultAmountPaise Int
   isActive           Boolean      @default(true)
   createdAt          DateTime     @default(now())
   updatedAt          DateTime     @updatedAt
   payouts            UserPayout[]
 }
+
+model PayoutTransfer {
+  id             String      @id @default(cuid())
+  batchId        String?
+  batch          PayoutBatch? @relation(fields: [batchId], references: [id])
+
+  userId         String
+  user           User        @relation(fields: [userId], references: [id])
+
+  bankAccountId  String
+  bankAccount    BankDetails @relation(fields: [bankAccountId], references: [id])
+
+  amountPaise    BigInt
+  status         PayoutStatus @default(REQUESTED)
+  reference      String?
+  createdAt      DateTime    @default(now())
+  updatedAt      DateTime    @updatedAt
+
+  // Optional: link back to individual payouts if you want
+  payouts        UserPayout[]
+}
+
 
 model PayoutBatch {
   id                String             @id @default(cuid())
@@ -348,38 +376,52 @@ model PayoutBatch {
   payoutAttachments PayoutAttachment[]
   approvedBy        Admin?             @relation("PayoutBatchApprovedBy", fields: [approvedById], references: [id])
   createdBy         Admin              @relation(fields: [createdById], references: [id])
-  payouts           UserPayout[]
+  transfers         PayoutTransfer[]
 
   @@index([status, createdAt])
 }
 
 model UserPayout {
   id                   String         @id @default(uuid())
+
   userId               String
   typeId               String
-  requestedAmountPaise BigInt
-  approvedAmountPaise  BigInt?
+
+  parentId             String
+
+  requestedAmountPaise Int
+  approvedAmountPaise  Int?
   currency             Currency       @default(INR)
   status               PayoutStatus   @default(REQUESTED)
+
+
+  referralId           String?        // if you have a Referral model
+  
+
   requestedById        String?
   approvedById         String?
   approvedAt           DateTime?
   paymentDate          DateTime?
   bankReference        String?
   paymentDetails       Json?
-  batchId              String?
+  transferReference    String?
   idempotencyKey       String?        @unique
   createdAt            DateTime       @default(now())
   updatedAt            DateTime       @updatedAt
+
   approvedBy           Admin?         @relation("PayoutApprovedBy", fields: [approvedById], references: [id])
-  batch                PayoutBatch?   @relation(fields: [batchId], references: [id])
   requestedBy          Admin?         @relation("PayoutRequestedBy", fields: [requestedById], references: [id])
   type                 UserPayoutType @relation(fields: [typeId], references: [id])
-  user                 User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user                 User           @relation("payout_user",fields: [userId], references: [id], onDelete: Cascade)
+  parent               User           @relation("payout_parent", fields: [parentId], references: [id], onDelete: Cascade)
+  BankDetails          BankDetails?   @relation(fields: [bankReference], references: [id], onDelete: Cascade)
+  PayoutTransfers      PayoutTransfer? @relation(fields: [transferReference], references: [id], onDelete: Cascade)
 
   @@index([userId, status, createdAt])
-  @@index([batchId, status])
+  @@index([transferReference, status])
+  @@index([referralId]) // if you add referralId
 }
+
 
 model PayoutAttachment {
   id            String      @id @default(cuid())
