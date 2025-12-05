@@ -118,16 +118,35 @@ export default function Footer() {
 					</a>
 					<div className="flex space-x-4 text-xl">
 						{[
-							{ href: "#", icon: <FaFacebookF />, color: "#1877F2" },
-							{ href: "#", icon: <FaTwitter />, color: "#1DA1F2" },
-							{ href: "#", icon: <FaInstagram />, color: "#E1306C" },
-							{ href: "#", icon: <FaLinkedin />, color: "#0077B5" },
+							{
+								href: "https://www.facebook.com/share/1CV4csMiyP/",
+								icon: <FaFacebookF />,
+								color: "#1877F2",
+							},
+							{
+								href: "https://x.com/vrkisanparivaar?s=20",
+								icon: <FaTwitter />,
+								color: "#1DA1F2",
+							},
+							{
+								href: "https://www.instagram.com/vrkisanparivaar?igsh=NjZ1aGY2NWp1aTJu",
+								icon: <FaInstagram />,
+								color: "#E1306C",
+							},
+							{
+								href: "https://www.linkedin.com/in/vr-kisan-parivaar/",
+								icon: <FaLinkedin />,
+								color: "#0077B5",
+							},
 						].map(({ href, icon, color }, idx) => (
 							<a
 								key={idx}
 								href={href}
+								target="_blank"
+								rel="noopener noreferrer"
 								aria-label="Social link"
-								className={`text-[${color}] hover:text-[#FF9933] transition-colors duration-300`}>
+								style={{ color }}
+								className="hover:text-[#FF9933] transition-colors duration-300">
 								{icon}
 							</a>
 						))}

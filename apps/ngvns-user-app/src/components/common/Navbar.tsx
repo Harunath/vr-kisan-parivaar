@@ -131,6 +131,14 @@ export default function Navbar() {
 								Shop
 							</Link>
 						</li>
+						<li>
+							<Link
+								href="/gallery"
+								onClick={handleLinkClick}
+								className="block py-2 hover:text-orange-600 transition-colors">
+								Gallery
+							</Link>
+						</li>
 
 						<li>
 							<Link
