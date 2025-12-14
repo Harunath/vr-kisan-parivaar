@@ -1,5 +1,6 @@
 import Link from "next/link";
 import React from "react";
+import InsurancesList from "./InsurancesList";
 
 const page = () => {
 	return (
@@ -10,6 +11,7 @@ const page = () => {
 				className="underline text-blue-600">
 				Generate List
 			</Link>
+			<InsurancesList />
 		</div>
 	);
 };

@@ -79,7 +79,7 @@ model User {
   UserPayments         UserPayments[]   @relation("payment-user")
   VRKP_Card            VRKP_Card?
 
-  insuranceRecord      InsuranceRecord?
+  insuranceRecord      UserInsuranceEnrollment[]
 
   byAcquisitionId     String?
   byAcquisition       MarketingMember?           @relation("AcquiredUsers", fields: [byAcquisitionId], references: [id])
@@ -88,6 +88,7 @@ model User {
   byMarketingTeam     MarketingTeam?   @relation(fields: [byMarketingTeamId], references: [id])
 
   landAllotmentMails   LandAllotmentMailLog[]
+  insuranceMails       InsuranceMailLog[]
 
   referralPayouts     UserPayout[]      @relation("payout_parent")
   directPayouts       UserPayout[]      @relation("payout_user")
@@ -330,6 +331,8 @@ model UserPayoutType {
   name               String       @unique
   description        String?
   defaultAmountPaise Int
+  approvedAmountPaise Int?
+  currency           Currency     @default(INR)
   isActive           Boolean      @default(true)
   createdAt          DateTime     @default(now())
   updatedAt          DateTime     @updatedAt
@@ -337,25 +340,32 @@ model UserPayoutType {
 }
 
 model PayoutTransfer {
-  id             String      @id @default(cuid())
+  id             String       @id @default(cuid())
   batchId        String?
   batch          PayoutBatch? @relation(fields: [batchId], references: [id])
 
   userId         String
-  user           User        @relation(fields: [userId], references: [id])
+  user           User         @relation(fields: [userId], references: [id])
 
   bankAccountId  String
-  bankAccount    BankDetails @relation(fields: [bankAccountId], references: [id])
+  bankAccount    BankDetails  @relation(fields: [bankAccountId], references: [id])
 
   amountPaise    BigInt
   status         PayoutStatus @default(REQUESTED)
   reference      String?
-  createdAt      DateTime    @default(now())
-  updatedAt      DateTime    @updatedAt
 
-  // Optional: link back to individual payouts if you want
+  // NEW FIELDS
+  idempotencyKey String?      @unique
+  cycleKey       String?      // e.g. "2025-12-07" (Sunday date)
+  cycleStart     DateTime?
+  cycleEnd       DateTime?
+
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+
   payouts        UserPayout[]
 }
+
 
 
 model PayoutBatch {
@@ -567,23 +577,66 @@ model Benefit {
   user        User        @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
-model InsuranceRecord {
-  id             String    @id @default(cuid())
-  userId         String    @unique
-  policyId       String    @unique
-  providerName   String?   // e.g., "LIC", "HDFC Ergo", etc.
-  policyType     String?   // e.g., "Health", "Life", "Vehicle", etc.
-  issueDate      DateTime  // When policy was issued
-  activationDate DateTime? // When policy becomes active
-  expiryDate     DateTime? // When policy expires
-  status         PolicyStatus @default(PENDING)
-  remarks        String?   // Any internal notes (optional)
-
-  user           User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  createdAt      DateTime  @default(now())
-  updatedAt      DateTime  @updatedAt
+enum InsuranceBatchStatus {
+  DRAFT
+  ACTIVE
+  EXPIRED
+  CANCELLED
 }
+
+model InsuranceRecord {
+  id             String               @id @default(uuid())
+  name           String               // e.g. "ULHC Batch Dec 2025"
+
+  // Usually non-null + unique once issued; you can keep it optional for DRAFT
+  policyNumber   String?
+  insurerName    String?              // e.g. "NIC", "ULHC", etc.
+
+  activationDate DateTime?
+  expiryDate     DateTime?
+
+  status         InsuranceBatchStatus @default(DRAFT)
+
+  // Document URLs
+  batchDocumentUrl   String?      // consolidated enrollment list PDF
+  policyDocumentUrl  String?
+  otherDocumentUrls  String[]     // any extra docs: annexures, invoices, etc.
+
+  // Relations
+  enrollments   UserInsuranceEnrollment[]  // 1 record → many enrollments
+
+  createdAt     DateTime              @default(now())
+  updatedAt     DateTime              @updatedAt
+
+  @@index([status])
+  @@index([activationDate])
+  @@index([expiryDate])
+}
+
+model UserInsuranceEnrollment {
+  id               String          @id @default(uuid())
+
+  userId           String
+  insuranceRecordId String
+
+  user             User            @relation(fields: [userId], references: [id])
+  insuranceRecord  InsuranceRecord @relation(fields: [insuranceRecordId], references: [id])
+
+  // Per-user/per-certificate details
+  memberCode       String?         // certificate number / member ID
+  certificateUrl   String?         // individual certificate PDF
+  activationDate   DateTime?       // override if needed
+  expiryDate       DateTime?
+  status           String?         // e.g. "ACTIVE", "LAPSED", "CANCELLED"
+
+  createdAt        DateTime        @default(now())
+
+  @@unique([userId, insuranceRecordId]) // no duplicate enrollment
+  @@index([userId])
+  @@index([insuranceRecordId])
+}
+
+
 
 enum PolicyStatus {
   PENDING    // Policy created but not yet active
@@ -733,6 +786,32 @@ model LandAllotmentMailLog {
   createdAt        DateTime     @default(now())
   updatedAt        DateTime     @updatedAt
 }
+
+model InsuranceMailLog {
+  id               String   @id @default(cuid())
+  
+  // For knowing whom you sent
+  toAddress        String
+  memberId         String     // optional (if linked to Member table)
+  member           User      @relation(fields: [memberId], references: [id])
+
+  // Template details
+  templateKey      String?
+  mergeInfo        Json?
+
+  // Delivery Tracking
+  deliveryStatus   MailStatus   @default(PENDING)
+  responseStatus   Int?         // e.g., 200, 400
+  responseData     Json?
+
+  retryCount       Int          @default(0)
+  lastTriedAt      DateTime? 
+  deliveredAt      DateTime?
+
+  createdAt        DateTime     @default(now())
+  updatedAt        DateTime     @updatedAt
+}
+
 
 enum MailStatus {
   PENDING      // Not attempted yet

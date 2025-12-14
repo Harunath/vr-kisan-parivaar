@@ -27,7 +27,7 @@ export async function GET(_req: NextRequest) {
 		// 1) Fetch data
 		const rows = await prisma.user.findMany({
 			where: {
-				insuranceRecord: { is: null }, // users without insurance
+				insuranceRecord: { none: {} }, // users without insurance
 			},
 			select: {
 				id: true,

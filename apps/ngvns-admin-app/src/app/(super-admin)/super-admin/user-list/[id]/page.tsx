@@ -43,6 +43,11 @@ export default async function UserDetailsPage({
 				},
 			},
 			landAllotments: true,
+			insuranceRecord: {
+				select: {
+					insuranceRecord: true,
+				},
+			},
 		},
 	});
 
@@ -148,6 +153,24 @@ export default async function UserDetailsPage({
 								.join(", ")}
 						</p>
 					</div>
+					{user.insuranceRecord && user.insuranceRecord.length > 0 ? (
+						<div className="mt-6">
+							<p className="text-xs text-neutral-500">
+								Insurance Records{" "}
+								<Link
+									href={`/super-admin/user-list/${user.id}/insurance-records`}>
+									View All
+								</Link>
+							</p>
+							<ul className="list-disc list-inside">
+								{user.insuranceRecord.map((record) => (
+									<li key={record.insuranceRecord.id} className="font-medium">
+										{record.insuranceRecord.name}
+									</li>
+								))}
+							</ul>
+						</div>
+					) : null}
 				</section>
 
 				{/* Future scope sections (placeholders for now) */}

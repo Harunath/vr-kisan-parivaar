@@ -1,0 +1,5 @@
+-- AlterTable
+ALTER TABLE "InsuranceRecord" ALTER COLUMN "activationDate" DROP NOT NULL,
+ALTER COLUMN "expiryDate" DROP NOT NULL,
+ALTER COLUMN "policyNumber" DROP NOT NULL,
+ALTER COLUMN "status" SET DEFAULT 'DRAFT';
