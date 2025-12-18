@@ -31,6 +31,7 @@ const ViewInsurance = async () => {
 		<>
 			<InsuranceDetails
 				insuranceName={insurance?.insuranceRecord?.insurerName || undefined}
+				policyNumber={insurance?.insuranceRecord?.policyNumber || undefined}
 				activationDate={
 					insurance?.insuranceRecord?.activationDate
 						?.toISOString()

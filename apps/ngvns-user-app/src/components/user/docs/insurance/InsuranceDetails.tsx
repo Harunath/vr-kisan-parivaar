@@ -8,12 +8,14 @@ import { AnimatePresence, motion } from "motion/react";
 
 const InsuranceDetails = ({
 	insuranceName,
+	policyNumber,
 	activationDate,
 	expirationDate,
 	status,
 	link,
 }: {
 	insuranceName: string | undefined;
+	policyNumber: string | undefined;
 	activationDate: string | undefined;
 	expirationDate: string | undefined;
 	status: string | undefined;
@@ -69,6 +71,13 @@ const InsuranceDetails = ({
 															</span>{" "}
 															{insuranceName}
 														</p>
+														<p>
+															<span className="font-medium">
+																Policy Number:
+															</span>{" "}
+															{policyNumber}
+														</p>
+
 														<p>
 															<span className="font-medium">
 																Activation Date:
