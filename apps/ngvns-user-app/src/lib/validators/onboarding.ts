@@ -12,8 +12,8 @@ export const onboardingSchema = z.object({
 	relationName: z.string().min(1, "Relation name is required"),
 	dob: z.string().min(1, "Date of birth is required"),
 	address: z.object({
-		addressLine1: z.string().min(1, "Address line 1 is required"),
-		addressLine2: z.string().optional(),
+		cityorvillage: z.string().min(1, "city or town or village is required"),
+		districtId: z.string().min(1, "District is required"),
 		stateId: z.string().min(1, "State is required"),
 		pincode: z
 			.string()
@@ -25,7 +25,7 @@ export const onboardingSchema = z.object({
 	email: z.string().email("Invalid email"),
 	aadhaar: z.string().regex(/^\d{12}$/, "Aadhaar must be 12 digits"),
 	gender: z.enum(["None", "Male", "Female", "Others"]),
-	userPhoto: z.string().min(1, "User photo is required"),
+	// userPhoto: z.string().min(1, "User photo is required"),
 	nominieeName: z.string().min(1, "Nominee name is required"),
 	nominieeDob: z.string().min(1, "Nominee DOB is required"),
 	relationship: z.string().min(1, "Relationship is required"),

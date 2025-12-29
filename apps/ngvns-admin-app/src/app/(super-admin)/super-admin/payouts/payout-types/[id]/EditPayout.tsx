@@ -9,6 +9,7 @@ type PayoutType = {
 	name: string;
 	description: string | null;
 	defaultAmountPaise: number | string | null;
+	approvedAmountPaise: bigint | null;
 	isActive: boolean;
 	createdAt?: string;
 	updatedAt?: string;
@@ -26,6 +27,7 @@ const EditPayout: React.FC<EditPayoutProps> = ({ id }) => {
 	const [form, setForm] = useState({
 		name: "",
 		description: "",
+		approvedAmountPaise: "",
 		defaultAmountRupees: "",
 		isActive: true,
 	});
@@ -78,6 +80,9 @@ const EditPayout: React.FC<EditPayoutProps> = ({ id }) => {
 					name: payout.name ?? "",
 					description: payout.description ?? "",
 					defaultAmountRupees: rupees,
+					approvedAmountPaise: payout.approvedAmountPaise
+						? payout.approvedAmountPaise.toString()
+						: "",
 					isActive: payout.isActive,
 				});
 
@@ -124,6 +129,7 @@ const EditPayout: React.FC<EditPayoutProps> = ({ id }) => {
 
 		let defaultAmountRupees = form.defaultAmountRupees.trim();
 		let defaultAmountPaise: string | null = null;
+		let approvedAmountPaise = form.approvedAmountPaise.trim();
 
 		if (defaultAmountRupees) {
 			const num = Number(defaultAmountRupees);
@@ -150,6 +156,7 @@ const EditPayout: React.FC<EditPayoutProps> = ({ id }) => {
 					description: form.description.trim() || null,
 					isActive: form.isActive,
 					defaultAmountPaise: defaultAmountPaise,
+					approvedAmountPaise: approvedAmountPaise,
 				}),
 			});
 
@@ -311,6 +318,69 @@ const EditPayout: React.FC<EditPayoutProps> = ({ id }) => {
 												value={form.defaultAmountRupees}
 												onChange={(e) =>
 													handleChange("defaultAmountRupees", e.target.value)
+												}
+											/>
+										</div>
+										<p className="text-xs text-slate-500">
+											This is the default payout amount used when generating
+											payout entries. You can still override it at transaction
+											level.
+										</p>
+									</div>
+
+									<div className="space-y-1.5">
+										<span className="block text-sm font-medium text-slate-800">
+											Active
+										</span>
+										<button
+											type="button"
+											onClick={() => handleChange("isActive", !form.isActive)}
+											className={`flex h-[42px] w-full items-center justify-between rounded-lg border px-3 py-2 text-sm transition ${
+												form.isActive
+													? "border-emerald-200 bg-emerald-50 text-emerald-800"
+													: "border-slate-200 bg-slate-50 text-slate-700"
+											}`}>
+											<span>
+												{form.isActive
+													? "This payout type can be used in system"
+													: "Disabled for new payouts"}
+											</span>
+											<span
+												className={`inline-flex h-5 w-9 items-center rounded-full p-[2px] transition ${
+													form.isActive ? "bg-emerald-500" : "bg-slate-400"
+												}`}>
+												<span
+													className={`h-4 w-4 rounded-full bg-white shadow transition ${
+														form.isActive ? "translate-x-4" : "translate-x-0"
+													}`}
+												/>
+											</span>
+										</button>
+										<p className="text-xs text-slate-500">
+											Inactive payout types will not be available for new
+											allocations but existing records stay intact.
+										</p>
+									</div>
+								</div>
+								{/* Approved amount & Active toggle */}
+								<div className="grid gap-4 sm:grid-cols-[2fr,1fr]">
+									<div className="space-y-1.5">
+										<label className="block text-sm font-medium text-slate-800">
+											Approved Amount (₹)
+										</label>
+										<div className="relative">
+											<span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-xs font-semibold text-slate-400">
+												₹
+											</span>
+											<input
+												type="number"
+												step="0.01"
+												min="0"
+												className="block w-full rounded-lg border border-slate-200 bg-slate-50 px-7 py-2.5 text-sm text-slate-900 shadow-sm outline-none ring-0 transition focus:border-emerald-500 focus:bg-white focus:ring-2 focus:ring-emerald-100"
+												placeholder="e.g., 500.00"
+												value={form.approvedAmountPaise}
+												onChange={(e) =>
+													handleChange("approvedAmountPaise", e.target.value)
 												}
 											/>
 										</div>

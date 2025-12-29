@@ -12,7 +12,7 @@ type ProfileDTO = {
 		relationType: string;
 		relationName: string;
 		gender: string;
-		userPhoto: string; // remote URL in DB
+		// userPhoto: string; // remote URL in DB
 		healthCard: boolean;
 		createdAt: string;
 		updatedAt: string;
@@ -59,50 +59,50 @@ export default function ProfileClient() {
 		})();
 	}, [data]);
 
-	useEffect(() => {
-		let revoke: string | null = null;
-		(async () => {
-			if (!data?.user?.userPhoto) return;
-			const wantVersion = String(data.version);
-			const haveVersion = localStorage.getItem(PHOTO_VERSION_KEY);
-			const hasCacheAPI = typeof window !== "undefined" && "caches" in window;
-			if (!hasCacheAPI) {
-				setBlobUrl(`${data.user.userPhoto}?v=${data.version}`);
-				return;
-			}
-			const cache = await caches.open(PHOTO_CACHE_NAME);
-			if (haveVersion === wantVersion) {
-				const match = await cache.match(PHOTO_CACHE_KEY);
-				if (match) {
-					const blob = await match.blob();
-					const url = URL.createObjectURL(blob);
-					setBlobUrl(url);
-					revoke = url;
-					return;
-				}
-			}
-			try {
-				const imgRes = await fetch(`${data.user.userPhoto}?v=${data.version}`, {
-					cache: "no-store",
-				});
-				if (!imgRes.ok) throw new Error("Image fetch failed");
-				const imgBlob = await imgRes.blob();
-				const storedRes = new Response(imgBlob, {
-					headers: { "Content-Type": imgBlob.type || "image/*" },
-				});
-				await cache.put(PHOTO_CACHE_KEY, storedRes);
-				localStorage.setItem(PHOTO_VERSION_KEY, wantVersion);
-				const url = URL.createObjectURL(imgBlob);
-				setBlobUrl(url);
-				revoke = url;
-			} catch {
-				setBlobUrl(`${data.user.userPhoto}?v=${data.version}`);
-			}
-		})();
-		return () => {
-			if (revoke) URL.revokeObjectURL(revoke);
-		};
-	}, [data?.user?.userPhoto, data?.version]);
+	// useEffect(() => {
+	// 	let revoke: string | null = null;
+	// 	(async () => {
+	// 		if (!data?.user?.userPhoto) return;
+	// 		const wantVersion = String(data.version);
+	// 		const haveVersion = localStorage.getItem(PHOTO_VERSION_KEY);
+	// 		const hasCacheAPI = typeof window !== "undefined" && "caches" in window;
+	// 		if (!hasCacheAPI) {
+	// 			setBlobUrl(`${data.user.userPhoto}?v=${data.version}`);
+	// 			return;
+	// 		}
+	// 		const cache = await caches.open(PHOTO_CACHE_NAME);
+	// 		if (haveVersion === wantVersion) {
+	// 			const match = await cache.match(PHOTO_CACHE_KEY);
+	// 			if (match) {
+	// 				const blob = await match.blob();
+	// 				const url = URL.createObjectURL(blob);
+	// 				setBlobUrl(url);
+	// 				revoke = url;
+	// 				return;
+	// 			}
+	// 		}
+	// 		try {
+	// 			const imgRes = await fetch(`${data.user.userPhoto}?v=${data.version}`, {
+	// 				cache: "no-store",
+	// 			});
+	// 			if (!imgRes.ok) throw new Error("Image fetch failed");
+	// 			const imgBlob = await imgRes.blob();
+	// 			const storedRes = new Response(imgBlob, {
+	// 				headers: { "Content-Type": imgBlob.type || "image/*" },
+	// 			});
+	// 			await cache.put(PHOTO_CACHE_KEY, storedRes);
+	// 			localStorage.setItem(PHOTO_VERSION_KEY, wantVersion);
+	// 			const url = URL.createObjectURL(imgBlob);
+	// 			setBlobUrl(url);
+	// 			revoke = url;
+	// 		} catch {
+	// 			setBlobUrl(`${data.user.userPhoto}?v=${data.version}`);
+	// 		}
+	// 	})();
+	// 	return () => {
+	// 		if (revoke) URL.revokeObjectURL(revoke);
+	// 	};
+	// }, [data?.user?.userPhoto, data?.version]);
 
 	const user = data?.user;
 	const since = useMemo(
@@ -154,7 +154,7 @@ export default function ProfileClient() {
 					</svg>
 
 					<div className="relative flex flex-col items-center gap-6 p-6 md:flex-row md:items-center md:gap-8 md:p-8">
-						<div
+						{/* <div
 							className="relative h-28 w-28 shrink-0 overflow-hidden rounded-2xl bg-white p-[2px]"
 							style={{
 								background: `linear-gradient(180deg, ${SAFFRON}, ${GREEN})`,
@@ -170,7 +170,7 @@ export default function ProfileClient() {
 									<div className="h-full w-full animate-pulse bg-gray-200" />
 								)}
 							</div>
-						</div>
+						</div> */}
 
 						<div className="min-w-0 flex-1">
 							<h1

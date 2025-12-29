@@ -134,14 +134,14 @@ export async function POST(req: NextRequest) {
 			const address = await tx.address.upsert({
 				where: { onboardingId: draft.id }, // needs @unique in your schema
 				update: {
-					addressLine: data.address.addressLine1,
-					addressLine2: data.address.addressLine2,
+					city: data.address.cityorvillage,
+					districtId: data.address.districtId,
 					StateId: data.address.stateId,
 					pincode: data.address.pincode,
 				},
 				create: {
-					addressLine: data.address.addressLine1,
-					addressLine2: data.address.addressLine2,
+					city: data.address.cityorvillage,
+					districtId: data.address.districtId,
 					StateId: data.address.stateId,
 					onboardingId: draft.id,
 					pincode: data.address.pincode,

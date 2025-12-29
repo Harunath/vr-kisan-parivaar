@@ -42,7 +42,7 @@ model User {
   aadhaar              String
   aadhaarVerified      Boolean
   gender               GenderType       @default(None)
-  userPhoto            String
+  userPhoto            String?
   nominieeName         String
   nominieeDob          DateTime
   relationship         String
@@ -165,7 +165,7 @@ model Onboarding {
   aadhaar            String
   aadhaarVerified    Boolean
   gender             GenderType     @default(None)
-  userPhoto          String
+  userPhoto          String?
   nominieeName       String
   nominieeDob        DateTime
   relationship       String
@@ -187,15 +187,19 @@ model Onboarding {
 
 model Address {
   id           String      @id @default(uuid())
-  addressLine  String
+  addressLine  String?
   addressLine2 String?
   StateId      String
+  districtId   String?
+  city         String?
+  zipCode      String?
   pincode      String
   createdAt    DateTime    @default(now())
   updatedAt    DateTime    @updatedAt
   onboardingId String?     @unique
   userId       String?     @unique
   State        States      @relation(fields: [StateId], references: [id])
+  district     Districts?  @relation(fields: [districtId], references: [id])
   onboarding   Onboarding? @relation("OnboardingAddress", fields: [onboardingId], references: [id])
   user         User?       @relation("UserAddress", fields: [userId], references: [id])
 }
@@ -210,6 +214,19 @@ model States {
   addresses      Address[]
   LandAllocation LandAllocation[]
   avaliableLands LandParcel[]
+  districts      Districts[]
+}
+
+model Districts {
+  id             String           @id @default(uuid())
+  name           String
+  code           String?
+  stateId        String
+  createdAt      DateTime         @default(now())
+  updatedAt      DateTime         @updatedAt
+  isActive       Boolean
+  addresses      Address[]
+  state          States           @relation(fields: [stateId], references: [id])
 }
 
 model BankDetails {

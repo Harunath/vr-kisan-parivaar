@@ -295,7 +295,7 @@ export async function POST(req: Request) {
 				fullname: true,
 				dob: true,
 				createdAt: true,
-				userPhoto: true,
+				// userPhoto: true,
 				VRKP_Card: {
 					select: {
 						cardNumber: true,
@@ -307,19 +307,13 @@ export async function POST(req: Request) {
 		if (!user) {
 			return NextResponse.json({ error: "User not found" }, { status: 404 });
 		}
-		if (
-			!user.vrKpId ||
-			!user.fullname ||
-			!user.dob ||
-			!user.createdAt ||
-			!user.userPhoto
-		) {
+		if (!user.vrKpId || !user.fullname || !user.dob || !user.createdAt) {
 			return NextResponse.json(
 				{ error: "User missing required fields for VRKP card generation" },
 				{ status: 400 }
 			);
 		}
-		const { vrKpId: vrkpid, dob, createdAt, userPhoto } = user;
+		const { vrKpId: vrkpid, dob, createdAt } = user;
 		const issuedAt = new Date().toLocaleDateString("en-IN", {
 			day: "2-digit",
 			month: "short",
@@ -327,7 +321,7 @@ export async function POST(req: Request) {
 		});
 		let { fullname: name } = user;
 
-		if (!vrkpid || !name || !dob || !createdAt || !issuedAt || !userPhoto) {
+		if (!vrkpid || !name || !dob || !createdAt || !issuedAt) {
 			return NextResponse.json(
 				{ error: "Missing parameters" },
 				{ status: 400 }
@@ -342,29 +336,29 @@ export async function POST(req: Request) {
 
 		// background
 		const bgUrl =
-			"https://pub-98a0b13dd37c4b7b84e18b52d9c03d5e.r2.dev/users/vrkp-card-template.png";
+			"https://pub-98a0b13dd37c4b7b84e18b52d9c03d5e.r2.dev/users/Effective%20Date%20%20(1).png";
 		const bgImage = await loadImage(bgUrl);
 		ctx.drawImage(bgImage, 0, 0, width, height);
 
 		// --- USER PHOTO ---
-		const photoResp = await fetch(userPhoto, { cache: "no-store" });
-		if (!photoResp.ok)
-			throw new Error(`userPhoto fetch failed: ${photoResp.status}`);
-		const photoBuf = Buffer.from(await photoResp.arrayBuffer());
+		// const photoResp = await fetch(userPhoto, { cache: "no-store" });
+		// if (!photoResp.ok)
+		// 	throw new Error(`userPhoto fetch failed: ${photoResp.status}`);
+		// const photoBuf = Buffer.from(await photoResp.arrayBuffer());
 
 		// auto-orient and square crop to fit the slot nicely
-		const AVATAR_W = 560;
-		const AVATAR_H = 560;
-		const AVATAR_X = 215;
-		const AVATAR_Y = 350;
+		// const AVATAR_W = 560;
+		// const AVATAR_H = 560;
+		// const AVATAR_X = 215;
+		// const AVATAR_Y = 350;
 
-		const squared = await sharp(photoBuf)
-			.rotate() // respect EXIF
-			.resize(AVATAR_W, AVATAR_H, { fit: "cover", position: "attention" })
-			.toBuffer();
+		// const squared = await sharp(photoBuf)
+		// 	.rotate() // respect EXIF
+		// 	.resize(AVATAR_W, AVATAR_H, { fit: "cover", position: "attention" })
+		// 	.toBuffer();
 
-		const userImg = await loadImage(squared);
-		drawRoundedImage(ctx, userImg, AVATAR_X, AVATAR_Y, AVATAR_W, AVATAR_H, 30);
+		// const userImg = await loadImage(squared);
+		// drawRoundedImage(ctx, userImg, AVATAR_X, AVATAR_Y, AVATAR_W, AVATAR_H, 30);
 
 		// text styles
 		ctx.shadowColor = "transparent"; // crisp text

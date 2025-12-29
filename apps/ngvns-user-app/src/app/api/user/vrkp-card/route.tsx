@@ -10,9 +10,7 @@ import fs from "fs";
 export const runtime = "nodejs";
 
 function mustExist(p: string) {
-	if (!fs.existsSync(p)) {
-		throw new Error(`Font file not found at: ${p}`);
-	}
+	if (!fs.existsSync(p)) throw new Error(`Font file not found at: ${p}`);
 }
 
 // 👉 Resolve relative to this app's CWD (the app root at runtime)
@@ -31,14 +29,12 @@ const BOLD_PATH = path.join(
 	"Inter_28pt-Bold.ttf"
 );
 
-// Helpful log once to verify
 console.log("[font] regular:", REGULAR_PATH);
 console.log("[font] bold   :", BOLD_PATH);
 
 mustExist(REGULAR_PATH);
 mustExist(BOLD_PATH);
 
-// DO NOT CHANGE: Inter registration you set up
 registerFont(REGULAR_PATH, { family: "Inter" });
 registerFont(BOLD_PATH, { family: "Inter", weight: "bold" });
 
@@ -48,10 +44,9 @@ type Body = {
 	dob: string;
 	createdAt: string;
 	issuedAt: string;
-	userPhoto: string; // URL or data URL
 };
 
-// helper to draw rounded-rect image
+// (unused now; kept for future)
 function drawRoundedImage(
 	ctx: NodeCanvasRenderingContext2D,
 	img: any,
@@ -75,61 +70,104 @@ function drawRoundedImage(
 	ctx.closePath();
 	ctx.clip();
 
-	// subtle shadow
 	ctx.shadowColor = "rgba(0,0,0,0.18)";
 	ctx.shadowBlur = 12;
 	ctx.drawImage(img, x, y, w, h);
 
 	ctx.restore();
 
-	// (optional) white border
 	ctx.lineWidth = 6;
 	ctx.strokeStyle = "rgba(255,255,255,0.9)";
 	ctx.stroke();
 }
 
 // ----------------------
-// Name drawing utilities
+// Fonts + helpers
 // ----------------------
-const NAME_X = 1210;
-const NAME_MAX_RIGHT = 1800;
-const NAME_MAX_WIDTH = NAME_MAX_RIGHT - NAME_X; // 590
-
-const NAME_FONT_BASE = 64; // short names (<=17)
-const NAME_FONT_REDUCED = 54; // medium names (18..30)
-const NAME_FONT_MIN = 36; // absolute minimum
-const NAME_LINE_HEIGHT_FACTOR = 1.15; // for two lines
+const LABEL_PX = 60; // bold label size
+const VALUE_PX = 64; // bold value size
+const ISSUED_PX = 50;
 
 function setFont(
 	ctx: CanvasRenderingContext2D,
 	px: number,
-	weight = 700,
+	weight: number = 700,
 	family = "Inter"
 ) {
 	ctx.font = `${weight} ${px}px ${family}`;
 }
+
 function fits(ctx: CanvasRenderingContext2D, text: string, maxWidth: number) {
 	return ctx.measureText(text).width <= maxWidth;
 }
+
 function shrinkUntilFits(
 	ctx: CanvasRenderingContext2D,
 	text: string,
 	startPx: number,
 	minPx: number,
 	maxWidth: number,
-	weight = 700,
-	family = "Inter"
+	weight = 700
 ) {
 	let px = startPx;
 	while (px > minPx) {
-		setFont(ctx, px, weight, family);
+		setFont(ctx, px, weight, "Inter");
 		if (fits(ctx, text, maxWidth)) return px;
 		px -= 1;
 	}
-	setFont(ctx, minPx, weight, family);
+	setFont(ctx, minPx, weight, "Inter");
 	return minPx;
 }
-/** Split by spaces into up to 2 lines; shrink font so BOTH lines fit. */
+
+// ----------------------
+// “Table centered” layout (like your image)
+// ----------------------
+
+// Card center reference (tweak if your template needs)
+const TABLE_CENTER_X = 960; // canvas center (1920/2)
+
+// column gaps (tweak to match screenshot spacing)
+const GAP_LABEL_TO_COLON = 90;
+const GAP_COLON_TO_VALUE = 40;
+
+// constrain value column so long IDs/names don't spill into design
+const VALUE_MAX_WIDTH = 920; // adjust if you want tighter
+
+function computeTableX(
+	ctx: CanvasRenderingContext2D,
+	labels: string[],
+	values: string[]
+) {
+	// measure max label width at label font
+	setFont(ctx, LABEL_PX, 700, "Inter");
+	const maxLabelW = Math.max(...labels.map((t) => ctx.measureText(t).width));
+
+	// colon width at label font
+	const colonW = ctx.measureText(":").width;
+
+	// measure max value width at value font but cap it
+	setFont(ctx, VALUE_PX, 700, "Inter");
+	const maxValueWRaw = Math.max(...values.map((t) => ctx.measureText(t).width));
+	const maxValueW = Math.min(maxValueWRaw, VALUE_MAX_WIDTH);
+
+	const tableW =
+		maxLabelW + GAP_LABEL_TO_COLON + colonW + GAP_COLON_TO_VALUE + maxValueW;
+
+	const labelX = TABLE_CENTER_X - tableW / 2;
+	const colonX = labelX + maxLabelW + GAP_LABEL_TO_COLON;
+	const valueX = colonX + colonW + GAP_COLON_TO_VALUE;
+
+	return { labelX, colonX, valueX, maxValueW };
+}
+
+// ----------------------
+// Name rules (your original intent, but constrained to value column)
+// ----------------------
+const NAME_FONT_BASE = 64; // short names
+const NAME_FONT_REDUCED = 54; // medium names
+const NAME_FONT_MIN = 36;
+const NAME_LINE_HEIGHT_FACTOR = 1.15;
+
 function splitIntoTwoLinesWithShrink(
 	ctx: CanvasRenderingContext2D,
 	full: string,
@@ -147,6 +185,7 @@ function splitIntoTwoLinesWithShrink(
 		const words = full.split(/\s+/);
 		let first = "";
 		let i = 0;
+
 		for (; i < words.length; i++) {
 			const test = first ? first + " " + words[i] : words[i];
 			if (fits(ctx, test!, maxWidth)) first = test!;
@@ -159,114 +198,117 @@ function splitIntoTwoLinesWithShrink(
 		}
 
 		const second = words.slice(i).join(" ").trim();
-
-		// Everything fit on first line (rare for >30 chars, but safe to handle)
-		if (!second) {
-			return { ok: true as const, px, lines: [first] };
-		}
+		if (!second) return { ok: true as const, px, lines: [first] };
 
 		if (fits(ctx, second, maxWidth)) {
 			return { ok: true as const, px, lines: [first, second] };
 		}
 
-		px -= 1; // shrink and try again
+		px -= 1;
 	}
 
 	return { ok: false as const };
 }
 
-/** Your exact rules:
- *  - <= 17 chars: single line at 64 (shrink if needed)
- *  - 18..30 chars: single line at 54 (shrink if needed)
- *  - > 30 chars: split by spaces into 2 lines; shrink so both fit
- *  Fallback for no-space tokens: shrink single-line.
- */
-function drawName(
+function drawNameValue(
 	ctx: CanvasRenderingContext2D,
 	name: string,
-	baselineY: number
+	valueX: number,
+	baselineY: number,
+	maxValueWidth: number
 ) {
-	name = ": " + name;
-	if (name.length <= 17) {
+	// NOTE: You already draw ":" separately in the table
+	const value = name;
+
+	// <= 17 chars: 64 (shrink if needed)
+	if (value.length <= 17) {
 		const px = shrinkUntilFits(
 			ctx,
-			name,
+			value,
 			NAME_FONT_BASE,
 			NAME_FONT_MIN,
-			NAME_MAX_WIDTH
+			maxValueWidth
 		);
 		setFont(ctx, px, 700, "Inter");
-		ctx.fillText(name, NAME_X, baselineY);
+		ctx.fillText(value, valueX, baselineY);
 		return;
 	}
 
-	if (name.length <= 30) {
+	// 18..30 chars: 54 (shrink if needed)
+	if (value.length <= 30) {
 		const px = shrinkUntilFits(
 			ctx,
-			name,
+			value,
 			NAME_FONT_REDUCED,
 			NAME_FONT_MIN,
-			NAME_MAX_WIDTH
+			maxValueWidth
 		);
 		setFont(ctx, px, 700, "Inter");
-		ctx.fillText(name, NAME_X, baselineY);
+		ctx.fillText(value, valueX, baselineY);
 		return;
 	}
 
-	// > 30 → try two lines split by space
+	// > 30: try 2 lines split; shrink to fit both
 	const res = splitIntoTwoLinesWithShrink(
 		ctx,
-		name,
+		value,
 		NAME_FONT_REDUCED,
 		NAME_FONT_MIN,
-		NAME_MAX_WIDTH
+		maxValueWidth
 	);
 
 	if (res.ok) {
 		const { px, lines } = res;
 		setFont(ctx, px, 700, "Inter");
-		if (!lines[0]) throw new Error("Internal error: no lines after split");
-		if (lines.length === 1) {
-			// if everything somehow fit in one line, just draw it
-			ctx.fillText(lines[0], NAME_X, baselineY);
-			return;
-		}
 
-		// draw two lines
 		const lineHeight = Math.round(px * NAME_LINE_HEIGHT_FACTOR);
-		ctx.fillText(lines[0], NAME_X, baselineY);
-		lines[1] && ctx.fillText(lines[1], NAME_X, baselineY + lineHeight);
+		ctx.fillText(lines[0]!, valueX, baselineY);
+		if (lines[1]) ctx.fillText(lines[1], valueX, baselineY + lineHeight);
 		return;
 	}
 
-	// fallback: no spaces or couldn't fit two lines → shrink single line
+	// fallback: shrink single line
 	const px = shrinkUntilFits(
 		ctx,
-		name,
+		value,
 		NAME_FONT_REDUCED,
 		NAME_FONT_MIN,
-		NAME_MAX_WIDTH
+		maxValueWidth
 	);
 	setFont(ctx, px, 700, "Inter");
-	ctx.fillText(name, NAME_X, baselineY);
+	ctx.fillText(value, valueX, baselineY);
+}
+
+// generic value drawing (for VRKP ID / DOB / Reg Date)
+function drawValue(
+	ctx: CanvasRenderingContext2D,
+	value: string,
+	valueX: number,
+	y: number,
+	maxValueWidth: number
+) {
+	// shrink slightly if needed (IDs can be long)
+	const px = shrinkUntilFits(ctx, value, VALUE_PX, 40, maxValueWidth);
+	setFont(ctx, px, 700, "Inter");
+	ctx.fillText(value, valueX, y);
 }
 
 // ----------------------
 
 export async function POST(req: Request) {
 	try {
-		const body = await req.json();
-		const { vrkpid, dob, createdAt, issuedAt, userPhoto } = body;
-
+		const body = (await req.json()) as Body;
+		const { vrkpid, dob, createdAt, issuedAt } = body;
 		let { name } = body;
 
-		if (!vrkpid || !name || !dob || !createdAt || !issuedAt || !userPhoto) {
+		if (!vrkpid || !name || !dob || !createdAt || !issuedAt) {
 			return NextResponse.json(
 				{ error: "Missing parameters" },
 				{ status: 400 }
 			);
 		}
-		if (name.length > 50) name = name.slice(0, 50); // hard limit
+		if (name.length > 50) name = name.slice(0, 50);
+
 		// canvas
 		const width = 1920;
 		const height = 1080;
@@ -275,79 +317,95 @@ export async function POST(req: Request) {
 
 		// background
 		const bgUrl =
-			"https://pub-98a0b13dd37c4b7b84e18b52d9c03d5e.r2.dev/vrkp-card-template.png";
+			"https://pub-98a0b13dd37c4b7b84e18b52d9c03d5e.r2.dev/users/Effective%20Date%20%20(1).png";
 		const bgImage = await loadImage(bgUrl);
 		ctx.drawImage(bgImage, 0, 0, width, height);
 
-		// --- USER PHOTO ---
-		const photoResp = await fetch(userPhoto, { cache: "no-store" });
-		if (!photoResp.ok)
-			throw new Error(`userPhoto fetch failed: ${photoResp.status}`);
-		const photoBuf = Buffer.from(await photoResp.arrayBuffer());
-
-		// auto-orient and square crop to fit the slot nicely
-		const AVATAR_W = 560;
-		const AVATAR_H = 560;
-		const AVATAR_X = 215;
-		const AVATAR_Y = 350;
-
-		const squared = await sharp(photoBuf)
-			.rotate() // respect EXIF
-			.resize(AVATAR_W, AVATAR_H, { fit: "cover", position: "attention" })
-			.toBuffer();
-
-		const userImg = await loadImage(squared);
-		drawRoundedImage(ctx, userImg, AVATAR_X, AVATAR_Y, AVATAR_W, AVATAR_H, 30);
-
 		// text styles
-		ctx.shadowColor = "transparent"; // crisp text
+		ctx.shadowColor = "transparent";
 		ctx.shadowBlur = 0;
 		ctx.fillStyle = "#0f172a";
 		ctx.textAlign = "left";
 		ctx.textBaseline = "alphabetic";
 
-		// choose readable sizes (Inter-Bold is weight 700)
-		const FONT_LABEL = "700 60px Inter"; // labels: VRKP ID, Name, DOB, Reg Date
-		const FONT_VALUE = "700 64px Inter"; // values: : VR500..., : Harunath...
-		const FONT_ISSUED = "700 50px Inter"; // rotated issued date
+		// rows (like your screenshot)
+		const labels = ["VRKP ID", "Name", "DOB", "Reg Date"];
+		const values = [vrkpid, name, dob, createdAt];
 
-		// small helper to keep spacing consistent (adds colon block)
-		function drawRow(
-			label: string,
-			value: string,
-			y: number,
-			xLabel = 910,
-			xColon = 1180,
-			xValue = 1210
-		) {
-			ctx.font = FONT_LABEL;
-			ctx.fillText(label, xLabel, y);
+		// compute single aligned table X positions
+		const { labelX, colonX, valueX, maxValueW } = computeTableX(
+			ctx as unknown as CanvasRenderingContext2D,
+			labels,
+			values
+		);
 
-			ctx.font = FONT_VALUE;
-			ctx.fillText(":", xColon, y);
-			ctx.fillText(value, xValue, y);
-		}
-		function drawNameLable(label: string, y: number, xLabel = 910) {
-			ctx.font = FONT_LABEL;
-			ctx.fillText(label, xLabel, y);
-		}
+		// row Y positions (you already had these)
+		const y1 = 460;
+		const y2 = 585;
+		const y3 = 710;
+		const y4 = 835;
 
-		// --- TEXT ---
-		drawRow("VRKP ID", vrkpid, 460);
-		drawNameLable("Name", 585);
-		drawName(ctx as unknown as CanvasRenderingContext2D, name, 585);
-		drawRow("DOB", dob, 710);
-		drawRow("Reg Date", createdAt, 835);
+		// draw label + colon column once per row, values in value column
+		setFont(ctx as unknown as CanvasRenderingContext2D, LABEL_PX, 700, "Inter");
 
-		// rotated issued date (left vertical)
+		// Row 1
+		ctx.fillText("VRKP ID", labelX, y1);
+		ctx.fillText(":", colonX, y1);
+		drawValue(
+			ctx as unknown as CanvasRenderingContext2D,
+			vrkpid,
+			valueX,
+			y1,
+			maxValueW
+		);
+
+		// Row 2 (Name with your smart wrapping)
+		ctx.fillText("Name", labelX, y2);
+		ctx.fillText(":", colonX, y2);
+		drawNameValue(
+			ctx as unknown as CanvasRenderingContext2D,
+			name,
+			valueX,
+			y2,
+			maxValueW
+		);
+
+		// Row 3
+		ctx.fillText("DOB", labelX, y3);
+		ctx.fillText(":", colonX, y3);
+		drawValue(
+			ctx as unknown as CanvasRenderingContext2D,
+			dob,
+			valueX,
+			y3,
+			maxValueW
+		);
+
+		// Row 4
+		ctx.fillText("Reg Date", labelX, y4);
+		ctx.fillText(":", colonX, y4);
+		drawValue(
+			ctx as unknown as CanvasRenderingContext2D,
+			createdAt,
+			valueX,
+			y4,
+			maxValueW
+		);
+
+		// rotated issued date (unchanged)
 		ctx.save();
 		ctx.translate(140, 960);
 		ctx.rotate(-Math.PI / 2);
-		ctx.font = FONT_ISSUED;
+		setFont(
+			ctx as unknown as CanvasRenderingContext2D,
+			ISSUED_PX,
+			700,
+			"Inter"
+		);
 		ctx.fillText(`ISSUED DATE : ${issuedAt}`, 0, 0);
 		ctx.restore();
 
-		// PNG → WebP (smaller)
+		// PNG → WebP
 		const webpBuffer = await sharp(canvas.toBuffer("image/png"))
 			.webp({ quality: 85 })
 			.toBuffer();

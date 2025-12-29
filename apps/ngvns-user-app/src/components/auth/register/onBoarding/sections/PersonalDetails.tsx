@@ -11,7 +11,7 @@ import type { OnboardingFormData } from "../../../../../lib/validators/onboardin
 import TextInput from "../fields/TextInput";
 import RadioGroup from "../fields/RadioGroup";
 import SelectInput from "../fields/SelectInput";
-import SingleImageUpload from "../fields/ImageUpload";
+// import SingleImageUpload from "../fields/ImageUpload";
 
 export default function PersonalDetails({
 	register,
@@ -51,7 +51,7 @@ export default function PersonalDetails({
 				/>
 			</div>
 			<TextInput
-				label={`${relType == "s/o" || relType == "d/o" ? "Father name" : relType == "w/o" ? "Husband name" : "Relation Name"} *`}
+				label={`Name`}
 				error={errors.relationName}
 				{...register("relationName")}
 			/>
@@ -79,14 +79,14 @@ export default function PersonalDetails({
 					error={errors.userPhoto}
 					{...register("userPhoto")}
 				/> */}
-				<SingleImageUpload
+				{/* <SingleImageUpload
 					label="Profile Photo"
 					hint="Upload a clear photo. You can also capture from camera."
 					name="userPhoto"
 					setValue={setValue}
 					error={errors.userPhoto}
 					onUploadingChange={setUploading}
-				/>
+				/> */}
 			</div>
 		</div>
 	);

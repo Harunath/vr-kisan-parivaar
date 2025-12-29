@@ -89,6 +89,10 @@ const SA_SideNav = () => {
 								label: "Profile Settings",
 								href: "/super-admin/settings/profile",
 							},
+							{
+								label: "Edit Locations",
+								href: "/super-admin/states",
+							},
 						],
 					},
 				]}
