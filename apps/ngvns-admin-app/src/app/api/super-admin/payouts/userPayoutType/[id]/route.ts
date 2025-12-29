@@ -37,9 +37,10 @@ export async function POST(req: NextRequest) {
 			name,
 			description,
 			defaultAmountPaise,
+			approvedAmountPaise,
 			isActive,
 		} = body ?? {};
-
+		console.log("Received payout type data:", body);
 		// Build data object only with defined fields
 		const data: any = {};
 
@@ -53,7 +54,10 @@ export async function POST(req: NextRequest) {
 					? defaultAmountPaise
 					: Number(defaultAmountPaise);
 		}
-
+		if (approvedAmountPaise !== undefined && approvedAmountPaise !== null) {
+			// allow number or string, convert to BigInt
+			data.approvedAmountPaise = Number(approvedAmountPaise);
+		}
 		if (id) {
 			// UPDATE existing payout type
 			const updated = await prisma.userPayoutType.update({

@@ -29,6 +29,12 @@ const page = async () => {
 							Default Amount:{" "}
 							{type.defaultAmountPaise ? `₹${type.defaultAmountPaise}` : "N/A"}
 						</p>
+						<p className="text-gray-800">
+							Approved Amount:{" "}
+							{type.approvedAmountPaise
+								? `₹${type.approvedAmountPaise}`
+								: "N/A"}
+						</p>
 						<p
 							className={`font-medium ${type.isActive ? "text-green-600" : "text-red-600"}`}>
 							Status: {type.isActive ? "Active" : "Inactive"}

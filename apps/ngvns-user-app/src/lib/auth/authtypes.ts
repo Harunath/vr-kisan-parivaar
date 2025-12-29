@@ -5,7 +5,7 @@ declare module "next-auth" {
 		phone: string;
 		email: string;
 		fullname: string;
-		userPhoto: string;
+		// userPhoto: string;
 		vrKpId: string;
 		canRefer?: boolean;
 		marketingMember?: boolean;

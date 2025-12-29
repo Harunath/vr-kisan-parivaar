@@ -83,6 +83,7 @@ export async function POST(req: NextRequest) {
 			// === Level 1 (parentA) ===
 			if (parentA) {
 				const amount = referralTypes.defaultAmountPaise ?? Number(0); // BigInt field
+				const approvedAmountPaise = referralTypes.approvedAmountPaise ?? null;
 
 				createInputs.push({
 					userId: u.id, // the user who joined
@@ -91,8 +92,8 @@ export async function POST(req: NextRequest) {
 					typeId: referralTypes.id,
 					referralId: null, // or u.parentReferralId if that matches your model
 
-					requestedAmountPaise: amount,
-					approvedAmountPaise: amount,
+					requestedAmountPaise: Number(amount),
+					approvedAmountPaise: Number(approvedAmountPaise),
 					bankReference: marketingTeam?.members[0]?.user.bankDetails?.id
 						? marketingTeam.members[0].user.bankDetails.id
 						: undefined,

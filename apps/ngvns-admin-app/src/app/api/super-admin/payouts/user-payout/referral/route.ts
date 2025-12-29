@@ -71,7 +71,7 @@ export async function POST(req: NextRequest) {
 				},
 			},
 		});
-
+		console.log(`Found ${users.length} users without referral payouts.`);
 		if (users.length === 0) {
 			return NextResponse.json({
 				ok: true,
@@ -91,7 +91,8 @@ export async function POST(req: NextRequest) {
 
 			// === Level 1 (parentA) ===
 			if (parentA) {
-				const amount = level1Type.defaultAmountPaise ?? BigInt(0); // BigInt field
+				const amount = level1Type.defaultAmountPaise ?? 0; // Int field
+				const approvedAmountPaise = level1Type.approvedAmountPaise ?? null;
 
 				createInputs.push({
 					userId: u.id, // the user who joined
@@ -101,7 +102,7 @@ export async function POST(req: NextRequest) {
 					referralId: null, // or u.parentReferralId if that matches your model
 
 					requestedAmountPaise: Number(amount),
-					approvedAmountPaise: null,
+					approvedAmountPaise: Number(approvedAmountPaise),
 
 					currency: "INR",
 					status: "REQUESTED",
@@ -114,7 +115,8 @@ export async function POST(req: NextRequest) {
 
 			// === Level 2 (parentB) ===
 			if (parentB) {
-				const amount = level2Type.defaultAmountPaise ?? BigInt(0);
+				const amount = level2Type.defaultAmountPaise ?? 0;
+				const approvedAmountPaise = level2Type.approvedAmountPaise ?? null;
 
 				createInputs.push({
 					userId: u.id,
@@ -124,7 +126,7 @@ export async function POST(req: NextRequest) {
 					referralId: null,
 
 					requestedAmountPaise: amount,
-					approvedAmountPaise: null,
+					approvedAmountPaise: Number(approvedAmountPaise),
 
 					currency: "INR",
 					status: "REQUESTED",
@@ -135,7 +137,8 @@ export async function POST(req: NextRequest) {
 
 			// === Level 3 (parentC) ===
 			if (parentC) {
-				const amount = level3Type.defaultAmountPaise ?? BigInt(0);
+				const amount = level3Type.defaultAmountPaise ?? 0;
+				const approvedAmountPaise = level3Type.approvedAmountPaise ?? null;
 
 				createInputs.push({
 					userId: u.id,
@@ -145,7 +148,7 @@ export async function POST(req: NextRequest) {
 					referralId: null,
 
 					requestedAmountPaise: amount,
-					approvedAmountPaise: null,
+					approvedAmountPaise: Number(approvedAmountPaise),
 
 					currency: "INR",
 					status: "REQUESTED",

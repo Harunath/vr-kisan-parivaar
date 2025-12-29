@@ -85,17 +85,6 @@ export async function POST(req: NextRequest) {
 		const fromAddress = process.env.EMAIL_FROM_ADDRESS;
 		const fromName = process.env.EMAIL_FROM_NAME ?? "VR Kisan Parivaar";
 
-		console.log(
-			"token : ",
-			token,
-			"\n",
-			"templateKey : ",
-			templateKey,
-			"\n",
-			"fromAddress : ",
-			fromAddress
-		);
-
 		if (!token || !templateKey || !fromAddress) {
 			return NextResponse.json(
 				{

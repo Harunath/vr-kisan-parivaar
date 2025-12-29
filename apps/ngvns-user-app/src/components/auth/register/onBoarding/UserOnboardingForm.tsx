@@ -49,8 +49,8 @@ export default function UserOnboardingForm({ goNext }: { goNext: () => void }) {
 			relationType: "",
 			gender: "None",
 			address: {
-				addressLine1: "",
-				addressLine2: "",
+				cityorvillage: "",
+				districtId: "",
 				stateId: "",
 				pincode: "",
 			},
@@ -124,23 +124,23 @@ export default function UserOnboardingForm({ goNext }: { goNext: () => void }) {
 				return;
 			}
 			toast.success("Form submitted successfully!");
-			let userPhotoString = "";
-			if (data.userPhoto && typeof data.userPhoto !== "string") {
-				const fileReader = new FileReader();
-				userPhotoString = await new Promise<string>((resolve, reject) => {
-					fileReader.onload = () => resolve(fileReader.result as string);
-					fileReader.onerror = () => reject("");
-					fileReader.readAsDataURL(data.userPhoto as unknown as File);
-				});
-			} else {
-				userPhotoString = data.userPhoto as string;
-			}
+			// let userPhotoString = "";
+			// if (data.userPhoto && typeof data.userPhoto !== "string") {
+			// 	const fileReader = new FileReader();
+			// 	userPhotoString = await new Promise<string>((resolve, reject) => {
+			// 		fileReader.onload = () => resolve(fileReader.result as string);
+			// 		fileReader.onerror = () => reject("");
+			// 		fileReader.readAsDataURL(data.userPhoto as unknown as File);
+			// 	});
+			// } else {
+			// 	userPhotoString = data.userPhoto as string;
+			// }
 			setData({
 				...data,
-				userPhoto: userPhotoString,
+				// userPhoto: userPhotoString,
 				address: {
-					addressLine1: data.address.addressLine1,
-					addressLine2: data.address.addressLine2,
+					cityorvillage: data.address.cityorvillage,
+					districtId: data.address.districtId,
 					pincode: String(data.address.pincode),
 					stateId: data.address.stateId,
 				},
@@ -148,23 +148,23 @@ export default function UserOnboardingForm({ goNext }: { goNext: () => void }) {
 			toast.success("Form saved locally!");
 			goNext();
 		} else {
-			let userPhotoString = "";
-			if (data.userPhoto && typeof data.userPhoto !== "string") {
-				const fileReader = new FileReader();
-				userPhotoString = await new Promise<string>((resolve, reject) => {
-					fileReader.onload = () => resolve(fileReader.result as string);
-					fileReader.onerror = () => reject("");
-					fileReader.readAsDataURL(data.userPhoto as unknown as File);
-				});
-			} else {
-				userPhotoString = data.userPhoto as string;
-			}
+			// let userPhotoString = "";
+			// if (data.userPhoto && typeof data.userPhoto !== "string") {
+			// 	const fileReader = new FileReader();
+			// 	userPhotoString = await new Promise<string>((resolve, reject) => {
+			// 		fileReader.onload = () => resolve(fileReader.result as string);
+			// 		fileReader.onerror = () => reject("");
+			// 		fileReader.readAsDataURL(data.userPhoto as unknown as File);
+			// 	});
+			// } else {
+			// 	// userPhotoString = data.userPhoto as string;
+			// }
 			setData({
 				...data,
-				userPhoto: userPhotoString,
+				// userPhoto: userPhotoString,
 				address: {
-					addressLine1: data.address.addressLine1,
-					addressLine2: data.address.addressLine2,
+					cityorvillage: data.address.cityorvillage,
+					districtId: data.address.districtId,
 					pincode: String(data.address.pincode),
 					stateId: data.address.stateId,
 				},
@@ -233,7 +233,11 @@ export default function UserOnboardingForm({ goNext }: { goNext: () => void }) {
 									setUploading={setUploading}
 									setValue={setValue}
 								/>
-								<AddressFields register={register} errors={errors} />
+								<AddressFields
+									register={register}
+									errors={errors}
+									watch={watch}
+								/>
 								<IdentityFields register={register} errors={errors} />
 								<NomineeFields register={register} errors={errors} />
 

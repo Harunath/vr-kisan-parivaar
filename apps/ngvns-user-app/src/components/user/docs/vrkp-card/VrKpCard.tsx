@@ -9,17 +9,17 @@ const VrKpCard = async ({ userId }: { userId: string }) => {
 	const VrKpCard = await prisma.vRKP_Card.findUnique({
 		where: { userId },
 	});
-	async function handleDownload() {
-		if (!VrKpCard?.cardUrl) return;
-		const res = await fetch(VrKpCard?.cardUrl);
-		const blob = await res.blob();
-		const url = URL.createObjectURL(blob);
-		const a = document.createElement("a");
-		a.href = url;
-		a.download = "VRKP-Card.webp";
-		a.click();
-		URL.revokeObjectURL(url);
-	}
+	// async function handleDownload() {
+	// 	if (!VrKpCard?.cardUrl) return;
+	// 	const res = await fetch(VrKpCard?.cardUrl);
+	// 	const blob = await res.blob();
+	// 	const url = URL.createObjectURL(blob);
+	// 	const a = document.createElement("a");
+	// 	a.href = url;
+	// 	a.download = "VRKP-Card.webp";
+	// 	a.click();
+	// 	URL.revokeObjectURL(url);
+	// }
 
 	const user = await prisma.user.findUnique({
 		where: { id: userId },
@@ -28,7 +28,7 @@ const VrKpCard = async ({ userId }: { userId: string }) => {
 			fullname: true,
 			dob: true,
 			createdAt: true,
-			userPhoto: true,
+			// userPhoto: true,
 		},
 	});
 	if (!user) {

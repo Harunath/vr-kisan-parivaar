@@ -3,8 +3,8 @@ import { create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
 
 type AddressType = {
-	addressLine1: string;
-	addressLine2?: string;
+	cityorvillage: string;
+	districtId: string;
 	stateId: string;
 	pincode: string;
 };
@@ -20,7 +20,7 @@ type FormData = {
 	email: string;
 	aadhaar: string;
 	gender: "None" | "Male" | "Female" | "Others";
-	userPhoto: string;
+	// userPhoto: string;
 	nominieeName: string;
 	nominieeDob: string;
 	relationship: string;

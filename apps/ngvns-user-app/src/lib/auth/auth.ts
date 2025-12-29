@@ -33,7 +33,7 @@ export const authOptions: NextAuthOptions = {
 						password: true,
 						fullname: true,
 						phone: true,
-						userPhoto: true,
+						// userPhoto: true,
 						vrKpId: true,
 						marketingMember: {
 							select: {
@@ -58,7 +58,7 @@ export const authOptions: NextAuthOptions = {
 						email: user.email,
 						phone: user.phone,
 						fullname: user.fullname,
-						userPhoto: user.userPhoto,
+						// userPhoto: user.userPhoto,
 						vrKpId: user.vrKpId,
 						canRefer: !!user.canRefer,
 						marketingMember: !!user.marketingMember,
@@ -95,7 +95,7 @@ export const authOptions: NextAuthOptions = {
 						email: true,
 						fullname: true,
 						phone: true,
-						userPhoto: true,
+						// userPhoto: true,
 						vrKpId: true,
 						canRefer: true,
 						marketingMember: {
@@ -110,7 +110,7 @@ export const authOptions: NextAuthOptions = {
 					token.email = vr_user.email;
 					token.fullname = vr_user.fullname;
 					token.phone = vr_user.phone;
-					token.userPhoto = vr_user.userPhoto;
+					// token.userPhoto = vr_user.userPhoto;
 					token.vrKpId = vr_user.vrKpId;
 					token.canRefer = vr_user.canRefer;
 					token.marketingMember = !!vr_user.marketingMember;
@@ -125,7 +125,7 @@ export const authOptions: NextAuthOptions = {
 				session.user.email = token.email as string;
 				session.user.fullname = token.fullname as string;
 				session.user.phone = token.phone as string;
-				session.user.userPhoto = token.userPhoto as string;
+				// session.user.userPhoto = token.userPhoto as string;
 				session.user.vrKpId = token.vrKpId as string;
 				session.user.canRefer = token.canRefer as boolean;
 				session.user.marketingMember = token.marketingMember as boolean;

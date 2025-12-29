@@ -64,7 +64,7 @@ type Body = {
 	dob: string;
 	createdAt: string;
 	issuedAt: string;
-	userPhoto: string; // URL or data URL
+	// userPhoto: string; // URL or data URL
 };
 
 // helper to draw rounded-rect image
@@ -94,7 +94,7 @@ function drawRoundedImage(
 	// subtle shadow
 	ctx.shadowColor = "rgba(0,0,0,0.18)";
 	ctx.shadowBlur = 12;
-	ctx.drawImage(img, x, y, w, h);
+	// ctx.drawImage(img, x, y, w, h);
 
 	ctx.restore();
 
@@ -295,7 +295,7 @@ export async function POST(req: Request) {
 				fullname: true,
 				dob: true,
 				createdAt: true,
-				userPhoto: true,
+				// userPhoto: true,
 				VRKP_Card: {
 					select: {
 						cardNumber: true,
@@ -311,15 +311,16 @@ export async function POST(req: Request) {
 			!user.vrKpId ||
 			!user.fullname ||
 			!user.dob ||
-			!user.createdAt ||
-			!user.userPhoto
+			!user.createdAt
+			// ||
+			// !user.userPhoto
 		) {
 			return NextResponse.json(
 				{ error: "User missing required fields for VRKP card generation" },
 				{ status: 400 }
 			);
 		}
-		const { vrKpId: vrkpid, dob, createdAt, userPhoto } = user;
+		const { vrKpId: vrkpid, dob, createdAt } = user;
 		const issuedAt = new Date().toLocaleDateString("en-IN", {
 			day: "2-digit",
 			month: "short",
@@ -327,7 +328,15 @@ export async function POST(req: Request) {
 		});
 		let { fullname: name } = user;
 
-		if (!vrkpid || !name || !dob || !createdAt || !issuedAt || !userPhoto) {
+		if (
+			!vrkpid ||
+			!name ||
+			!dob ||
+			!createdAt ||
+			!issuedAt
+
+			// || !userPhoto
+		) {
 			return NextResponse.json(
 				{ error: "Missing parameters" },
 				{ status: 400 }
@@ -347,10 +356,12 @@ export async function POST(req: Request) {
 		ctx.drawImage(bgImage, 0, 0, width, height);
 
 		// --- USER PHOTO ---
-		const photoResp = await fetch(userPhoto, { cache: "no-store" });
-		if (!photoResp.ok)
-			throw new Error(`userPhoto fetch failed: ${photoResp.status}`);
-		const photoBuf = Buffer.from(await photoResp.arrayBuffer());
+		// const photoResp = await fetch(
+		// 	userPhoto,
+		// 	{ cache: "no-store" });
+		// if (!photoResp.ok)
+		// 	throw new Error(`userPhoto fetch failed: ${photoResp.status}`);
+		// const photoBuf = Buffer.from(await photoResp.arrayBuffer());
 
 		// auto-orient and square crop to fit the slot nicely
 		const AVATAR_W = 560;
@@ -358,13 +369,13 @@ export async function POST(req: Request) {
 		const AVATAR_X = 215;
 		const AVATAR_Y = 350;
 
-		const squared = await sharp(photoBuf)
-			.rotate() // respect EXIF
-			.resize(AVATAR_W, AVATAR_H, { fit: "cover", position: "attention" })
-			.toBuffer();
+		// const squared = await sharp(photoBuf)
+		// 	.rotate() // respect EXIF
+		// 	.resize(AVATAR_W, AVATAR_H, { fit: "cover", position: "attention" })
+		// 	.toBuffer();
 
-		const userImg = await loadImage(squared);
-		drawRoundedImage(ctx, userImg, AVATAR_X, AVATAR_Y, AVATAR_W, AVATAR_H, 30);
+		// const userImg = await loadImage(squared);
+		// drawRoundedImage(ctx, userImg, AVATAR_X, AVATAR_Y, AVATAR_W, AVATAR_H, 30);
 
 		// text styles
 		ctx.shadowColor = "transparent"; // crisp text
