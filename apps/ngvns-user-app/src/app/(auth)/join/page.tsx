@@ -31,9 +31,9 @@ const BENEFITS = [
 		accent: "savings",
 	},
 	{
-		title: "2 Sq. Yards Land Allotment",
-		desc: "Eligible members receive an allocation of 2 square yards as per program rules.",
-		accent: "land",
+		title: "1 Free Health Check up",
+		desc: "Eligible members receive one free health check up as part of their membership benefits.",
+		accent: "health",
 	},
 ] as const;
 
@@ -41,15 +41,15 @@ function AccentIcon({ kind }: { kind: (typeof BENEFITS)[number]["accent"] }) {
 	// simple inline SVGs (no libraries)
 	const common = "h-5 w-5";
 	switch (kind) {
-		case "land":
-			return (
-				<svg viewBox="0 0 24 24" className={common} aria-hidden>
-					<path
-						fill="currentColor"
-						d="M3 5h18v4H3zM3 11h18v8H3zM7 13h2v4H7zM11 13h2v4h-2zM15 13h2v4h-2z"
-					/>
-				</svg>
-			);
+		// case "land":
+		// 	return (
+		// 		<svg viewBox="0 0 24 24" className={common} aria-hidden>
+		// 			<path
+		// 				fill="currentColor"
+		// 				d="M3 5h18v4H3zM3 11h18v8H3zM7 13h2v4H7zM11 13h2v4h-2zM15 13h2v4h-2z"
+		// 			/>
+		// 		</svg>
+		// 	);
 		case "health":
 			return (
 				<svg viewBox="0 0 24 24" className={common} aria-hidden>

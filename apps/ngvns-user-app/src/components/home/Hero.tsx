@@ -58,7 +58,7 @@ export default function Hero() {
 				</h1>
 
 				<h4 className="mb-2 sm:mb-3 text-2xl sm:text-3xl md:text-4xl font-semibold text-green-800 leading-tight tracking-tight">
-					Building Sustainable Futures for Rural India
+					Building Sustainable Future for Rural India
 				</h4>
 
 				<p className="mb-5 sm:mb-6 max-w-2xl text-[15px] sm:text-base md:text-lg text-zinc-700">
@@ -73,6 +73,15 @@ export default function Hero() {
 				</div>
 
 				<div className="mb-6 sm:mb-8 flex w-full max-w-md flex-col gap-3 sm:max-w-none sm:w-auto sm:flex-row sm:gap-4">
+					<a
+						href="https://www.unitylifehealthcare.com/network-hospitals"
+						target="_blank"
+						rel="noopener noreferrer"
+						className="w-full sm:w-auto">
+						<button className="w-full sm:w-auto bg-[#045e5a] hover:bg-[#045e5a]/80 text-white px-6 py-3 rounded-full font-semibold transition shadow">
+							Health Care Services
+						</button>
+					</a>
 					<Link href="/join" className="w-full sm:w-auto">
 						<button className="w-full sm:w-auto bg-orange-600 hover:bg-orange-700 text-white px-6 py-3 rounded-full font-semibold transition shadow">
 							Know More
