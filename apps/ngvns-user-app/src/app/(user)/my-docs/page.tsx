@@ -46,7 +46,7 @@ export default async function Page() {
 				</h1>
 				<VrKpCard userId={session.user.id} />
 				<Activation />
-				<LandAllocationPage />
+				{/* <LandAllocationPage /> */}
 				<ViewInsurance />
 			</div>
 		</div>

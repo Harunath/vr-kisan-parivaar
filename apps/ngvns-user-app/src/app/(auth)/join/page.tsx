@@ -15,8 +15,8 @@ export const metadata: Metadata = {
 
 const BENEFITS = [
 	{
-		title: "Health Care Services for 3 Years",
-		desc: "Access partnered healthcare benefits with a 3-year health care services.",
+		title: "Health Care Services for 5 Years",
+		desc: "Access partnered healthcare benefits with a 5-year health care services.",
 		accent: "health",
 	},
 

@@ -74,11 +74,11 @@ export default function Hero() {
 
 				<div className="mb-6 sm:mb-8 flex w-full max-w-md flex-col gap-3 sm:max-w-none sm:w-auto sm:flex-row sm:gap-4">
 					<a
-						href="https://www.unitylifehealthcare.com/network-hospitals"
+						href="https://www.unitylifehealthcare.com"
 						target="_blank"
 						rel="noopener noreferrer"
 						className="w-full sm:w-auto">
-						<button className="w-full sm:w-auto bg-[#045e5a] hover:bg-[#045e5a]/80 text-white px-6 py-3 rounded-full font-semibold transition shadow">
+						<button className="w-full sm:w-auto bg-[#000033] hover:bg-[#000033]/80 text-white px-6 py-3 rounded-full font-semibold transition shadow">
 							Health Care Services
 						</button>
 					</a>

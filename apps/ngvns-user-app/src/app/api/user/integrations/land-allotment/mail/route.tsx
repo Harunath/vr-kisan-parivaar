@@ -13,176 +13,183 @@ type LandAllotmentRequestBody = {
 
 export async function POST(req: NextRequest) {
 	try {
-		const body = (await req.json()) as LandAllotmentRequestBody;
-
-		const { userId } = body;
-
-		if (!userId) {
-			return NextResponse.json({ error: "User Id required" }, { status: 400 });
-		}
-		const user = await prisma.user.findUnique({
-			where: { id: userId },
-			select: {
-				fullname: true,
-				email: true,
-				vrKpId: true,
-				landAllotments: true,
-			},
-		});
-		if (!user) {
-			return NextResponse.json({ error: "User not found" }, { status: 404 });
-		}
-
-		if (!user.landAllotments || !user.landAllotments[0]) {
-			return NextResponse.json(
-				{ error: "No land allotment found for user" },
-				{ status: 400 }
-			);
-		}
-		console.log("User land allotment:", user.landAllotments[0]);
-		const landparcel = await prisma.landParcel.findUnique({
-			where: { id: user.landAllotments[0].landParcelId },
-		});
-		const landparcelUnit = await prisma.landParcelUnit.findUnique({
-			where: { id: user.landAllotments[0].landParcelUnitId },
-		});
-		if (!landparcel || !landparcelUnit) {
-			return NextResponse.json(
-				{ error: "Land parcel or unit not found" },
-				{ status: 400 }
-			);
-		}
-		console.log("Land Parcel:", landparcel);
-		console.log("Land Parcel Unit:", landparcelUnit);
-		// 1) Generate PDF as Buffer using @react-pdf/renderer
-		const pdfUint8Array = await renderToBuffer(
-			<LandAllotmentLetterPdf
-				date={user.landAllotments[0].allocatedAt.toLocaleDateString("en-GB")}
-				memberId={user.vrKpId}
-				memberName={user.fullname}
-				landName="2 sq. yards"
-				unit={String(landparcelUnit?.unitNumber)}
-				surveyNo={landparcel?.surveyNumber}
-				address={landparcel?.addressLine!}
-			/>
-		);
-
-		// Make sure it's a Node Buffer
-		const pdfBuffer = Buffer.isBuffer(pdfUint8Array)
-			? pdfUint8Array
-			: Buffer.from(pdfUint8Array);
-
-		// DEBUG: check sizes
-		console.log("PDF byte length:", pdfBuffer.length);
-		const pdfBase64 = pdfBuffer.toString("base64");
-		console.log("PDF base64 length:", pdfBase64.length);
-
-		// 2) Prepare ZeptoMail request
-		const apiUrl = process.env.EMAIL_API_URL!;
-
-		const token = process.env.EMAIL_TOKEN; // raw token (without prefix)
-		const templateKey = process.env.EMAIL_TEMPLATE_KEY;
-		const fromAddress = process.env.EMAIL_FROM_ADDRESS;
-		const fromName = process.env.EMAIL_FROM_NAME ?? "VR Kisan Parivaar";
-
-		console.log(
-			"token : ",
-			token,
-			"\n",
-			"templateKey : ",
-			templateKey,
-			"\n",
-			"fromAddress : ",
-			fromAddress
-		);
-
-		if (!token || !templateKey || !fromAddress) {
-			return NextResponse.json(
-				{
-					error:
-						"ZeptoMail env vars missing. Set ZEPTOMAIL_TOKEN, ZEPTOMAIL_LAND_TEMPLATE_KEY, ZEPTOMAIL_FROM_ADDRESS.",
-				},
-				{ status: 500 }
-			);
-		}
-
-		const htmlbody = landAllotmentEmailBody({
-			date: user.landAllotments[0].allocatedAt.toISOString().split("T")[0]!,
-			memberName: user.fullname,
-			memberId: user.vrKpId,
-			landName: "2 sq. yards",
-			unit: String(landparcelUnit?.unitNumber),
-			surveyNo: landparcel?.surveyNumber,
-			address: landparcel?.addressLine!,
-		});
-		const merge_info = {
-			date: user.landAllotments[0].allocatedAt.toISOString().split("T")[0],
-			landName: "2 sq. yards",
-			unit: String(landparcelUnit?.unitNumber),
-			address: landparcel?.addressLine!,
-			memberName: user.fullname,
-			surveyNo: landparcel?.surveyNumber,
-			memberId: user.vrKpId,
-		};
-		const url = `${apiUrl.replace(/\/$/, "")}`;
-		const client = new SendMailClient({ url: url, token });
-		const res = await client.sendMail({
-			from: { address: fromAddress, name: fromName },
-			to: [
-				{
-					email_address: {
-						address: user.email,
-						name: user.fullname,
-					},
-				},
-			],
-			subject: "VRKP Land Allotment Letter",
-			htmlbody,
-			attachments: [
-				{
-					name: `VRKP-Land-Allotment-${user.vrKpId}.pdf`,
-					mime_type: "application/pdf",
-					content: pdfBase64, // from your @react-pdf render
-				},
-			],
-		});
-
-		console.log("Zepto response:", res);
-		if (res.error) {
-			await prisma.landAllotmentMailLog.create({
-				data: {
-					memberId: userId,
-					toAddress: user.email,
-					deliveryStatus: MailStatus.FAILED,
-					responseData: JSON.stringify(res),
-					responseStatus: res.code,
-					templateKey: templateKey,
-					mergeInfo: merge_info,
-					retryCount: 0,
-				},
-			});
-		} else {
-			await prisma.landAllotmentMailLog.create({
-				data: {
-					memberId: userId,
-					toAddress: user.email,
-					deliveryStatus: MailStatus.SENT,
-					responseData: JSON.stringify(res),
-					responseStatus: res.code,
-					templateKey: templateKey,
-					mergeInfo: merge_info,
-					retryCount: 0,
-				},
-			});
-		}
-
 		return NextResponse.json(
 			{
-				message: "Land allotment mail triggered",
-				zepto: res,
+				message: "Removed feature. For more details contact VR KISAN PARIVAAR",
 			},
-			{ status: 200 }
+			{ status: 501 }
 		);
+
+		// const body = (await req.json()) as LandAllotmentRequestBody;
+
+		// const { userId } = body;
+
+		// if (!userId) {
+		// 	return NextResponse.json({ error: "User Id required" }, { status: 400 });
+		// }
+		// const user = await prisma.user.findUnique({
+		// 	where: { id: userId },
+		// 	select: {
+		// 		fullname: true,
+		// 		email: true,
+		// 		vrKpId: true,
+		// 		landAllotments: true,
+		// 	},
+		// });
+		// if (!user) {
+		// 	return NextResponse.json({ error: "User not found" }, { status: 404 });
+		// }
+
+		// if (!user.landAllotments || !user.landAllotments[0]) {
+		// 	return NextResponse.json(
+		// 		{ error: "No land allotment found for user" },
+		// 		{ status: 400 }
+		// 	);
+		// }
+		// console.log("User land allotment:", user.landAllotments[0]);
+		// const landparcel = await prisma.landParcel.findUnique({
+		// 	where: { id: user.landAllotments[0].landParcelId },
+		// });
+		// const landparcelUnit = await prisma.landParcelUnit.findUnique({
+		// 	where: { id: user.landAllotments[0].landParcelUnitId },
+		// });
+		// if (!landparcel || !landparcelUnit) {
+		// 	return NextResponse.json(
+		// 		{ error: "Land parcel or unit not found" },
+		// 		{ status: 400 }
+		// 	);
+		// }
+		// console.log("Land Parcel:", landparcel);
+		// console.log("Land Parcel Unit:", landparcelUnit);
+		// // 1) Generate PDF as Buffer using @react-pdf/renderer
+		// const pdfUint8Array = await renderToBuffer(
+		// 	<LandAllotmentLetterPdf
+		// 		date={user.landAllotments[0].allocatedAt.toLocaleDateString("en-GB")}
+		// 		memberId={user.vrKpId}
+		// 		memberName={user.fullname}
+		// 		landName="2 sq. yards"
+		// 		unit={String(landparcelUnit?.unitNumber)}
+		// 		surveyNo={landparcel?.surveyNumber}
+		// 		address={landparcel?.addressLine!}
+		// 	/>
+		// );
+
+		// // Make sure it's a Node Buffer
+		// const pdfBuffer = Buffer.isBuffer(pdfUint8Array)
+		// 	? pdfUint8Array
+		// 	: Buffer.from(pdfUint8Array);
+
+		// // DEBUG: check sizes
+		// console.log("PDF byte length:", pdfBuffer.length);
+		// const pdfBase64 = pdfBuffer.toString("base64");
+		// console.log("PDF base64 length:", pdfBase64.length);
+
+		// // 2) Prepare ZeptoMail request
+		// const apiUrl = process.env.EMAIL_API_URL!;
+
+		// const token = process.env.EMAIL_TOKEN; // raw token (without prefix)
+		// const templateKey = process.env.EMAIL_TEMPLATE_KEY;
+		// const fromAddress = process.env.EMAIL_FROM_ADDRESS;
+		// const fromName = process.env.EMAIL_FROM_NAME ?? "VR Kisan Parivaar";
+
+		// console.log(
+		// 	"token : ",
+		// 	token,
+		// 	"\n",
+		// 	"templateKey : ",
+		// 	templateKey,
+		// 	"\n",
+		// 	"fromAddress : ",
+		// 	fromAddress
+		// );
+
+		// if (!token || !templateKey || !fromAddress) {
+		// 	return NextResponse.json(
+		// 		{
+		// 			error:
+		// 				"ZeptoMail env vars missing. Set ZEPTOMAIL_TOKEN, ZEPTOMAIL_LAND_TEMPLATE_KEY, ZEPTOMAIL_FROM_ADDRESS.",
+		// 		},
+		// 		{ status: 500 }
+		// 	);
+		// }
+
+		// const htmlbody = landAllotmentEmailBody({
+		// 	date: user.landAllotments[0].allocatedAt.toISOString().split("T")[0]!,
+		// 	memberName: user.fullname,
+		// 	memberId: user.vrKpId,
+		// 	landName: "2 sq. yards",
+		// 	unit: String(landparcelUnit?.unitNumber),
+		// 	surveyNo: landparcel?.surveyNumber,
+		// 	address: landparcel?.addressLine!,
+		// });
+		// const merge_info = {
+		// 	date: user.landAllotments[0].allocatedAt.toISOString().split("T")[0],
+		// 	landName: "2 sq. yards",
+		// 	unit: String(landparcelUnit?.unitNumber),
+		// 	address: landparcel?.addressLine!,
+		// 	memberName: user.fullname,
+		// 	surveyNo: landparcel?.surveyNumber,
+		// 	memberId: user.vrKpId,
+		// };
+		// const url = `${apiUrl.replace(/\/$/, "")}`;
+		// const client = new SendMailClient({ url: url, token });
+		// const res = await client.sendMail({
+		// 	from: { address: fromAddress, name: fromName },
+		// 	to: [
+		// 		{
+		// 			email_address: {
+		// 				address: user.email,
+		// 				name: user.fullname,
+		// 			},
+		// 		},
+		// 	],
+		// 	subject: "VRKP Land Allotment Letter",
+		// 	htmlbody,
+		// 	attachments: [
+		// 		{
+		// 			name: `VRKP-Land-Allotment-${user.vrKpId}.pdf`,
+		// 			mime_type: "application/pdf",
+		// 			content: pdfBase64, // from your @react-pdf render
+		// 		},
+		// 	],
+		// });
+
+		// console.log("Zepto response:", res);
+		// if (res.error) {
+		// 	await prisma.landAllotmentMailLog.create({
+		// 		data: {
+		// 			memberId: userId,
+		// 			toAddress: user.email,
+		// 			deliveryStatus: MailStatus.FAILED,
+		// 			responseData: JSON.stringify(res),
+		// 			responseStatus: res.code,
+		// 			templateKey: templateKey,
+		// 			mergeInfo: merge_info,
+		// 			retryCount: 0,
+		// 		},
+		// 	});
+		// } else {
+		// 	await prisma.landAllotmentMailLog.create({
+		// 		data: {
+		// 			memberId: userId,
+		// 			toAddress: user.email,
+		// 			deliveryStatus: MailStatus.SENT,
+		// 			responseData: JSON.stringify(res),
+		// 			responseStatus: res.code,
+		// 			templateKey: templateKey,
+		// 			mergeInfo: merge_info,
+		// 			retryCount: 0,
+		// 		},
+		// 	});
+		// }
+
+		// return NextResponse.json(
+		// 	{
+		// 		message: "Land allotment mail triggered",
+		// 		zepto: res,
+		// 	},
+		// 	{ status: 200 }
+		// );
 	} catch (err: any) {
 		console.error("Error in land allotment send API RAW:", err);
 
