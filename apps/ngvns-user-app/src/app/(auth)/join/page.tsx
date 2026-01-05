@@ -16,23 +16,23 @@ export const metadata: Metadata = {
 const BENEFITS = [
 	{
 		title: "Health Care Services for 5 Years",
-		desc: "Access trusted partnered healthcare benefits for a full 5 years.",
+		desc: "General care, specialty treatments, Ayurveda, Homeopathy,Dental, Eye, and Skin care Up to 40% discount at VR Kisan  Parivaar–empanelled hospitals.",
 		accent: "health",
 	},
 
 	{
 		title: "₹5 Lakhs Personal Accidental Insurance (5 Years)",
-		desc: "Coverage up to ₹5,00,000/- for accident;  permanent and partial disabilities also covered",
+		desc: "Comprehensive protection up to ₹5,00,000 against accidents, disabilities, and animal or snake bites.",
 		accent: "insurance",
 	},
 	{
 		title: "Discounted Provisions & Cashback Offers",
-		desc: "Save on essentials via partnered provision stores and periodic cashback programs.",
+		desc: "Enjoy special discounts and exclusive offers on daily essentials at VR 1 Mart stores, plus empanelled pharmacies, labs, and diagnostic centers.",
 		accent: "savings",
 	},
 	{
 		title: "1 Free Health Check up",
-		desc: "Eligible members receive one free health check up as part of their membership benefits.",
+		desc: "Each beneficiary will receive one free health check-up as part of our beneficiary program, equivalent to the registration amount.",
 		accent: "health",
 	},
 ] as const;
