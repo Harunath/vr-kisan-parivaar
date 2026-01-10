@@ -24,6 +24,21 @@ export type UserItem = {
 	createdAt: string;
 	updatedAt: string;
 	address?: UserAddress | null;
+	joinedBy?: {
+		id: "";
+		vrKpId: "";
+		fullname: "";
+	};
+	parentB?: {
+		id: "";
+		vrKpId: "";
+		fullname: "";
+	};
+	parentC?: {
+		id: "";
+		vrKpId: "";
+		fullname: "";
+	};
 };
 
 export type CAUserItem = {

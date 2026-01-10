@@ -84,18 +84,9 @@ export default async function Page() {
 								{leftToFill(l1, 5)} left to fill the bar.
 							</span>
 
-							{l1 > 4 ? (
-								<p className="mt-2 text-sm font-semibold">
-									{l1} × {level1} = ₹ {l1 * level1}/-
-								</p>
-							) : (
-								<>
-									<p className="mt-2 text-sm font-semibold">
-										{l1} × {level1until5} = ₹ {l1 * level1until5}/-
-									</p>
-									<Highlighting />
-								</>
-							)}
+							<p className="mt-2 text-sm font-semibold">
+								{l1} × {level1} = ₹ {l1 * level1}/-
+							</p>
 
 							<div className="mt-4 grid grid-cols-3">
 								<div className="h-1 bg-[#FF9933]" />

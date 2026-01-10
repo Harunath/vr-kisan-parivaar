@@ -32,14 +32,14 @@ export default function PersonalDetails({
 		<div className="grid grid-cols-1 gap-4 md:grid-cols-2">
 			<div className="col-span-1 md:col-span-2">
 				<TextInput
-					label="Full Name *"
+					label="Full Name"
 					error={errors.fullname}
 					{...register("fullname")}
 				/>
 			</div>
 
 			<div>
-				<label className="mb-1 block text-sm font-medium">Relation Type</label>
+				<label className="mb-1 block text-sm font-medium"></label>
 				<RadioGroup
 					name="relationType"
 					register={register}
@@ -51,22 +51,19 @@ export default function PersonalDetails({
 				/>
 			</div>
 			<TextInput
-				label={`Name`}
+				label={`Father/Husband Name`}
 				error={errors.relationName}
 				{...register("relationName")}
 			/>
 
 			<TextInput
 				type="date"
-				label="Date of Birth *"
+				label="Date of Birth"
 				error={errors.dob}
 				{...register("dob")}
 			/>
 
-			<SelectInput
-				label="Gender *"
-				error={errors.gender}
-				{...register("gender")}>
+			<SelectInput label="Gender" error={errors.gender} {...register("gender")}>
 				<option value="None">Select Gender</option>
 				<option value="Male">Male</option>
 				<option value="Female">Female</option>

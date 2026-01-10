@@ -72,14 +72,14 @@ export default function AddressFields({
 		<div className="md:col-span-2 grid grid-cols-1 gap-4 md:grid-cols-2">
 			<div className="md:col-span-2">
 				<TextInput
-					label="City or Town or Village*"
+					label="City/Town/Village"
 					error={errors.address?.cityorvillage}
 					{...register("address.cityorvillage")}
 				/>
 			</div>
 
 			<SelectInput
-				label="State *"
+				label="State"
 				error={errors.address?.stateId}
 				{...register("address.stateId")}>
 				<option value="">Select State</option>
@@ -92,7 +92,7 @@ export default function AddressFields({
 			</SelectInput>
 
 			<SelectInput
-				label="District *"
+				label="District"
 				error={errors.address?.districtId}
 				{...register("address.districtId")}>
 				<option value="">Select District</option>
@@ -116,7 +116,7 @@ export default function AddressFields({
 
 			<TextInput
 				inputMode="numeric"
-				label="Pincode *"
+				label="Pincode"
 				error={errors.address?.pincode}
 				{...register("address.pincode")}
 			/>

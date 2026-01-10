@@ -79,6 +79,27 @@ export async function GET(req: NextRequest) {
 							pincode: true,
 						},
 					},
+					joinedBy: {
+						select: {
+							id: true,
+							fullname: true,
+							vrKpId: true,
+						},
+					},
+					parentB: {
+						select: {
+							id: true,
+							fullname: true,
+							vrKpId: true,
+						},
+					},
+					parentC: {
+						select: {
+							id: true,
+							fullname: true,
+							vrKpId: true,
+						},
+					},
 					// add other relations you consider “full details”
 					// e.g., referrals, payments, memberships, etc.
 				},

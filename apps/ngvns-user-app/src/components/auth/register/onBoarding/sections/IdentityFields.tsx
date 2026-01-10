@@ -14,15 +14,19 @@ export default function IdentityFields({
 }) {
 	return (
 		<>
-			<TextInput label="Phone *" error={errors.phone} {...register("phone")} />
+			<TextInput label="Phone" error={errors.phone} {...register("phone")} />
 			<TextInput
 				type="email"
-				label="Email *"
+				label="Email"
 				error={errors.email}
 				{...register("email")}
 			/>
+			<span className="text-[10px] font-extralight text-gray-500">
+				Aadhaar is used for Insurance purpose only
+			</span>
+
 			<TextInput
-				label="Aadhaar *"
+				label="Aadhaar"
 				error={errors.aadhaar}
 				{...register("aadhaar")}
 			/>

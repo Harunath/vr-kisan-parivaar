@@ -48,6 +48,27 @@ export default async function UserDetailsPage({
 					insuranceRecord: true,
 				},
 			},
+			joinedBy: {
+				select: {
+					id: true,
+					fullname: true,
+					vrKpId: true,
+				},
+			},
+			parentB: {
+				select: {
+					id: true,
+					fullname: true,
+					vrKpId: true,
+				},
+			},
+			parentC: {
+				select: {
+					id: true,
+					fullname: true,
+					vrKpId: true,
+				},
+			},
 		},
 	});
 
@@ -171,6 +192,27 @@ export default async function UserDetailsPage({
 							</ul>
 						</div>
 					) : null}
+					<div className="mt-6">
+						<p className="text-xs text-neutral-500">Relations</p>
+						<p className="font-medium">
+							Parent:{" "}
+							{user.joinedBy
+								? `${user.joinedBy.fullname} (VRKP: ${user.joinedBy.vrKpId})`
+								: "N/A"}
+						</p>
+						<p className="font-medium">
+							Parent B:{" "}
+							{user.parentB
+								? `${user.parentB.fullname} (VRKP: ${user.parentB.vrKpId})`
+								: "N/A"}
+						</p>
+						<p className="font-medium">
+							Parent C:{" "}
+							{user.parentC
+								? `${user.parentC.fullname} (VRKP: ${user.parentC.vrKpId})`
+								: "N/A"}
+						</p>
+					</div>
 				</section>
 
 				{/* Future scope sections (placeholders for now) */}

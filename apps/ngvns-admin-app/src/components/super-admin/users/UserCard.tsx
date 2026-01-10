@@ -52,6 +52,21 @@ export default function UserCard({ user }: { user: UserItem }) {
 							Aadhaar ✗
 						</span>
 					)}
+					{user.joinedBy ? (
+						<span className="rounded-full border px-2 py-0.5 text-neutral-700">
+							Joined by {user.joinedBy.fullname}
+						</span>
+					) : null}
+					{user.parentB ? (
+						<span className="rounded-full border px-2 py-0.5 text-neutral-700">
+							Parent B: {user.parentB.fullname}
+						</span>
+					) : null}
+					{user.parentC ? (
+						<span className="rounded-full border px-2 py-0.5 text-neutral-700">
+							Parent C: {user.parentC.fullname}
+						</span>
+					) : null}
 				</div>
 
 				<span className="text-xs text-neutral-400 group-hover:text-neutral-600">

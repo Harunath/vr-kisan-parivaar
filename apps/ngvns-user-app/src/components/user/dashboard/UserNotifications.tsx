@@ -44,12 +44,12 @@ export default function UserNotifications({ userId }: { userId: string }) {
 				}
 
 				// Land Allotments Check
-				if (!data.landAllotments || data.landAllotments.length === 0) {
-					notes.push({
-						message: "No Land Allotment found.",
-						actionNeeded: true,
-					});
-				}
+				// if (!data.landAllotments || data.landAllotments.length === 0) {
+				// 	notes.push({
+				// 		message: "No Land Allotment found.",
+				// 		actionNeeded: true,
+				// 	});
+				// }
 
 				// VRKP Card Check (correct property name)
 				if (!data.VRKP_Card || !data.VRKP_Card.cardNumber) {

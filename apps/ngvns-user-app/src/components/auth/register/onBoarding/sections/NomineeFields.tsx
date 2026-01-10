@@ -15,21 +15,21 @@ export default function NomineeFields({
 	return (
 		<>
 			<TextInput
-				label="Nominee Name *"
+				label="Nominee Name"
 				error={errors.nominieeName}
 				{...register("nominieeName")}
 			/>
 
 			<TextInput
 				type="date"
-				label="Nominee DOB *"
+				label="Nominee DOB"
 				error={errors.nominieeDob}
 				{...register("nominieeDob")}
 			/>
 
 			<div className="md:col-span-2">
 				<TextInput
-					label="Nominee Relationship *"
+					label="Nominee Relationship"
 					error={errors.relationship}
 					{...register("relationship")}
 				/>

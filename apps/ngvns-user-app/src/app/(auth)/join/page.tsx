@@ -8,32 +8,37 @@ const COLORS = {
 };
 
 export const metadata: Metadata = {
-	title: "Membership Benefits | VRKP",
+	title: "Registration Benefits | VRKP",
 	description:
-		"See what you get with VRKP membership: land allotment, health coverage, personal accident insurance, and savings on essentials.",
+		"See what you get with VRKP Registration: land allotment, health coverage, personal accident insurance, and savings on essentials.",
 };
 
 const BENEFITS = [
 	{
+		title: "1 Free Health Check up",
+		desc: "Each beneficiary will receive one free health check-up as part of our beneficiary program.",
+		accent: "health",
+	},
+	{
 		title: "Health Care Services for 5 Years",
-		desc: "Access partnered healthcare benefits with a 5-year health care services.",
+		desc: "General care, specialty treatments, Ayurveda, Homeopathy,Dental, Eye, and Skin care Up to 40% discount at VR Kisan  Parivaar–empanelled hospitals.",
 		accent: "health",
 	},
 
 	{
 		title: "₹5 Lakhs Personal Accidental Insurance (5 Years)",
-		desc: "Coverage up to ₹5,00,000/- for accident;  permanent and partial disabilities also covered",
+		desc: "Comprehensive protection up to ₹5,00,000 against accidents, disabilities, and animal or snake bites.",
 		accent: "insurance",
 	},
 	{
 		title: "Discounted Provisions & Cashback Offers",
-		desc: "Save on essentials via partnered provision stores and periodic cashback programs.",
+		desc: "Enjoy special discounts and exclusive offers on daily essentials at VR 1 Mart stores.",
 		accent: "savings",
 	},
 	{
-		title: "1 Free Health Check up",
-		desc: "Eligible members receive one free health check up as part of their membership benefits.",
-		accent: "health",
+		title: "Discount Offers",
+		desc: "Enjoy special discounts at empanelled pharmacies, labs, and diagnostic centers.",
+		accent: "savings",
 	},
 ] as const;
 
@@ -113,7 +118,7 @@ export default async function BenefitsPage() {
 							</Link>
 						</li>
 						<li aria-hidden="true">/</li>
-						<li className="text-neutral-700">Membership Benefits</li>
+						<li className="text-neutral-700">Registration Benefits</li>
 					</ol>
 				</nav>
 
@@ -121,7 +126,7 @@ export default async function BenefitsPage() {
 					<h1
 						className="text-3xl sm:text-4xl font-semibold tracking-tight"
 						style={{ color: COLORS.navy }}>
-						Membership Benefits
+						Registration Benefits
 					</h1>
 					<div
 						className="mt-3 h-1 w-28 rounded"
@@ -131,7 +136,7 @@ export default async function BenefitsPage() {
 						aria-hidden
 					/>
 					<p className="mt-4 max-w-2xl text-neutral-700">
-						Your membership includes long-term value across land, health,
+						Your registration includes long-term value across land, health,
 						insurance, and daily savings. Review the benefits below, then
 						continue to registration.
 					</p>
