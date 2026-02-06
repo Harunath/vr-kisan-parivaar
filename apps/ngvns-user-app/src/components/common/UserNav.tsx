@@ -56,11 +56,11 @@ export default function UserNavbar({ canViewRefs }: { canViewRefs: boolean }) {
 					className="flex items-center transition-transform hover:scale-[1.02]"
 					onClick={handleLinkClick}>
 					<Image
-						src="https://res.cloudinary.com/diaoy3wzi/image/upload/v1756982391/vrKP-4_no_bg_jndjxt.png"
+						src="https://res.cloudinary.com/dwsm6i6z9/image/upload/v1770361958/VR_KP_Logo_zgv7j5.png"
 						alt="VR KP Logo"
-						width={180}
-						height={60}
-						className="h-12 md:h-16 w-auto object-contain"
+						width={300}
+						height={120}
+						className="h-18 w-auto object-contain"
 						priority
 					/>
 				</Link>
