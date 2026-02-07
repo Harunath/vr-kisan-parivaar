@@ -34,9 +34,9 @@ export default function AuthNavbar() {
 						<Image
 							src="https://res.cloudinary.com/dwsm6i6z9/image/upload/v1770361958/VR_KP_Logo_zgv7j5.png"
 							alt="VR KP Logo"
-							width={300}
-							height={120}
-							className="h-18 w-auto object-contain"
+							width={240}
+							height={96}
+							className="h-14 w-auto object-contain"
 							priority
 						/>
 					</Link>
