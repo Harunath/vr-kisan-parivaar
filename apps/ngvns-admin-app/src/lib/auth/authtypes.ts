@@ -7,6 +7,7 @@ declare module "next-auth" {
 		email: string;
 		fullname: string;
 		role: AdminRole;
+		sessionToken: string;
 	}
 
 	interface Session {

@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { signIn, signOut, useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import { getActiveSessionToken } from "../../app/actions/user";
 
 export default function AdminLoginPage() {
 	const router = useRouter();
@@ -22,6 +23,11 @@ export default function AdminLoginPage() {
 	const redirecting = () => {
 		if (session?.user?.id) {
 			console.log("Already logged in as", session.user);
+			const getSession = async () => {
+				const authorized = await getActiveSessionToken();
+				if (!authorized) signOut({ callbackUrl: "/login" });
+			};
+			getSession();
 			if (session.user.role === "DATA_ENTRY") router.push("/data-entry");
 			else if (session.user.role === "FINANCE") router.push("/finance-admin");
 			else if (session.user.role === "COMMAND") router.push("/command-admin");
