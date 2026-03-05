@@ -20,6 +20,7 @@ model Admin {
   totpSecret            String?
   role                  AdminRole
   active                Boolean            @default(true)
+  activeSessionToken    String?
   auditLogs             AdminAuditLog[]    @relation("ActorAdminAuditLogs")
   issuedBenefit         Benefit[]
   allocationsMade       LandAllocation[]
