@@ -11,8 +11,8 @@ export default function Page() {
 			<div className="relative z-10 w-full max-w-3xl px-6 text-center">
 				<div className="flex flex-col items-center justify-center space-y-3">
 					<Image
-						src="https://res.cloudinary.com/diaoy3wzi/image/upload/v1763962658/vr1mart-logo_sample1_aresdz.png"
-						alt="VR 1 Mart Logo"
+						src="https://res.cloudinary.com/dwsm6i6z9/image/upload/v1772694021/Avriyaa_-_Logo_PNG_isfktw.png"
+						alt="Avriyaa The Mart Logo"
 						width={800} // increased
 						height={250} // increased
 						className="object-contain"

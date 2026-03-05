@@ -4,6 +4,7 @@ import CredentialsProvider from "next-auth/providers/credentials";
 import { JWT } from "next-auth/jwt";
 import prisma from "@ngvns2025/db/client";
 import bcrypt from "bcryptjs";
+import { randomUUID } from "crypto";
 
 export const authOptions: NextAuthOptions = {
 	providers: [
@@ -14,7 +15,7 @@ export const authOptions: NextAuthOptions = {
 				password: { label: "Password", type: "password" },
 			},
 			async authorize(credentials) {
-				console.log("Authorizing with credentials:", credentials);
+				console.log("credentials : ", credentials);
 				if (!credentials?.phone || !credentials?.password) {
 					console.error("Missing phone or password in credentials");
 					throw new Error("Invalid email or password");
@@ -30,17 +31,21 @@ export const authOptions: NextAuthOptions = {
 						role: true,
 					},
 				});
-				console.log("Admin found:", admin);
 				if (admin) {
 					// Verify password
 					const isValidPassword = await bcrypt.compare(
 						credentials.password,
-						admin.password
+						admin.password,
 					);
 					if (!isValidPassword) {
 						throw new Error("Invalid password");
 					}
-					console.log("Password valid:", isValidPassword);
+					const sessionToken = randomUUID();
+					console.log("sessionToken : ", sessionToken);
+					const user = await prisma.admin.update({
+						where: { id: admin.id },
+						data: { activeSessionToken: sessionToken },
+					});
 					const log = await prisma.adminAuditLog.create({
 						data: {
 							actorId: admin.id,
@@ -60,6 +65,7 @@ export const authOptions: NextAuthOptions = {
 						phone: admin.phone, // Ensure phone is always a string
 						fullname: admin.fullname,
 						role: admin.role,
+						sessionToken: sessionToken,
 					};
 				}
 				return null;
@@ -81,20 +87,12 @@ export const authOptions: NextAuthOptions = {
 			return "/unauthorized";
 		},
 		async redirect({ baseUrl }) {
-			console.log("Redirecting to baseUrl:", baseUrl);
 			return baseUrl + "/login";
 		},
 		async jwt({ token, user }) {
 			if (user && user.phone) {
 				const admin = await prisma.admin.findFirst({
-					where: { phone: user.phone },
-					select: {
-						id: true,
-						email: true,
-						fullname: true,
-						phone: true,
-						role: true,
-					},
+					where: { id: user.id },
 				});
 				if (admin) {
 					token.id = admin.id;
@@ -102,8 +100,10 @@ export const authOptions: NextAuthOptions = {
 					token.fullname = admin.fullname;
 					token.phone = admin.phone;
 					token.role = admin.role;
+					token.sessionToken = admin.activeSessionToken;
 				}
 			}
+			console.log("token : ", token);
 			return token;
 		},
 
